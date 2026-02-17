@@ -15,29 +15,148 @@
     width: 100vw;
   }
 
-  /* ── Full-screen website background ────────────────── */
+  /* ── Recreated JDM Products website background ────── */
   #site-bg {
     position: fixed; inset: 0;
     width: 100%; height: 100%;
     z-index: 0;
-    border: none;
+    overflow-y: auto;
+    background: #fff;
   }
-  /* Screenshot image as background */
-  #site-bg-img {
-    position: fixed; inset: 0;
-    width: 100%; height: 100%;
-    z-index: 0;
-    object-fit: cover;
-    object-position: top center;
+  .jdm-site {
+    min-height: 100vh;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: #222;
+    background: #fff;
   }
-  /* Fallback iframe (hidden by default, shown if no screenshot) */
-  #site-bg-iframe {
-    position: fixed; inset: 0;
-    width: 100%; height: 100%;
-    z-index: 0;
-    border: none;
-    display: none;
+
+  /* Top utility bar */
+  .jdm-topbar {
+    display: flex; justify-content: flex-end; align-items: center;
+    padding: 12px 60px; gap: 24px;
+    background: #fff;
   }
+  .jdm-topbar a {
+    font-size: 13px; color: #222; text-decoration: underline;
+    font-weight: 500; letter-spacing: .3px;
+  }
+  .jdm-topbar a:hover { color: #1a6fc4; }
+
+  /* Main nav */
+  .jdm-nav {
+    display: flex; align-items: center;
+    padding: 0 60px; height: 60px;
+    background: #fff;
+    gap: 36px;
+  }
+  .jdm-logo {
+    display: flex; align-items: baseline;
+    margin-right: 20px; flex-shrink: 0;
+  }
+  .jdm-logo-jdm {
+    font-size: 36px; font-weight: 900; color: #1a6fc4;
+    letter-spacing: -1px; font-style: italic;
+    font-family: 'Arial Black', 'Segoe UI', sans-serif;
+  }
+  .jdm-logo-products {
+    font-size: 22px; font-weight: 400; color: #333;
+    letter-spacing: .5px; margin-left: 1px;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+  }
+  .jdm-nav-links {
+    display: flex; gap: 28px; align-items: center;
+  }
+  .jdm-nav-links a {
+    text-decoration: none; color: #222; font-size: 13px;
+    font-weight: 600; text-transform: uppercase;
+    letter-spacing: .8px; white-space: nowrap;
+  }
+  .jdm-nav-links a:hover { color: #1a6fc4; }
+
+  /* Hero carousel */
+  .jdm-hero {
+    margin: 30px 60px 0;
+    background: #e8e8e8;
+    border-radius: 0;
+    position: relative;
+    height: 520px;
+    display: flex;
+    overflow: hidden;
+  }
+  .hero-left {
+    flex: 1; display: flex; align-items: flex-end; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .hero-person {
+    width: 420px; height: 480px;
+    background: linear-gradient(135deg, #666 0%, #888 30%, #555 70%, #777 100%);
+    border-radius: 0;
+    position: relative;
+    margin-bottom: 0;
+    /* Silhouette of person with fitness gear */
+    clip-path: polygon(35% 0%, 65% 0%, 70% 8%, 72% 15%, 68% 25%, 75% 30%, 80% 35%, 78% 45%, 82% 50%, 80% 60%, 70% 65%, 65% 75%, 60% 85%, 55% 95%, 50% 100%, 30% 100%, 35% 90%, 32% 80%, 28% 70%, 25% 60%, 22% 50%, 25% 40%, 30% 30%, 28% 20%, 32% 10%);
+  }
+  /* Abstract person shape via CSS */
+  .hero-figure {
+    position: absolute; bottom: 0; left: 50%; transform: translateX(-55%);
+    width: 380px; height: 100%;
+  }
+  .hero-figure-body {
+    position: absolute; bottom: 0;
+    width: 100%; height: 90%;
+    background: radial-gradient(ellipse at 45% 30%, #555 0%, #444 40%, #666 70%, transparent 71%);
+  }
+
+  .hero-right {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 40px;
+  }
+  .hero-brand-mark {
+    font-size: 180px; font-weight: 900; color: #222;
+    line-height: .85; letter-spacing: -8px;
+    font-style: italic;
+    font-family: 'Arial Black', Impact, sans-serif;
+    margin-bottom: -10px;
+  }
+  .hero-brand-name {
+    font-size: 64px; font-weight: 800; color: #222;
+    letter-spacing: 2px;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    margin-bottom: 30px;
+  }
+  .hero-btn {
+    display: inline-block; padding: 14px 36px;
+    background: #222; color: #fff; font-size: 15px;
+    font-weight: 600; text-decoration: none;
+    letter-spacing: .5px; border: none;
+    cursor: default;
+  }
+
+  /* Carousel dots */
+  .carousel-dots {
+    display: flex; justify-content: center;
+    gap: 10px; padding: 20px 0 10px;
+    background: #fff;
+  }
+  .carousel-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: #1a6fc4;
+  }
+  .carousel-dot.hollow {
+    background: transparent;
+    border: 2px solid #1a6fc4;
+  }
+
+  /* Chevron arrows */
+  .hero-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    font-size: 48px; color: #ccc; cursor: default;
+    user-select: none; z-index: 2;
+    font-weight: 300;
+  }
+  .hero-arrow.left { left: 16px; }
+  .hero-arrow.right { right: 16px; }
 
   /* ── Chat Widget ──────────────────────────────────── */
   #chat-bubble {
@@ -195,22 +314,116 @@
   }
 
   /* ── Mobile ──────────────────────────────────────── */
-  @media (max-width: 500px) {
+  @media (max-width: 768px) {
     #chat-window {
       width: calc(100vw - 16px); right: 8px; bottom: 96px;
       max-height: calc(100vh - 120px);
       height: calc(100vh - 120px);
       border-radius: 12px;
     }
+    .jdm-nav { padding: 0 20px; gap: 16px; }
+    .jdm-nav-links { display: none; }
+    .jdm-topbar { padding: 10px 20px; }
+    .jdm-hero { margin: 20px 20px 0; height: 360px; }
+    .hero-brand-mark { font-size: 100px; }
+    .hero-brand-name { font-size: 36px; }
+    .hero-figure { width: 250px; }
   }
 </style>
 </head>
 <body>
 
-<!-- ── Full-screen JDM Products website background ──── -->
-<img id="site-bg-img" src="screenshot.png" alt="JDM Products Website"
-     onerror="this.style.display='none'; document.getElementById('site-bg-iframe').style.display='block';" />
-<iframe id="site-bg-iframe" src="https://jdmproducts.com" title="JDM Products"></iframe>
+<!-- ── Recreated JDM Products website background ──── -->
+<div id="site-bg">
+<div class="jdm-site">
+
+  <!-- Top utility links -->
+  <div class="jdm-topbar">
+    <a href="#">NEW ACCOUNT</a>
+    <a href="#">REGISTER FOR PORTAL</a>
+    <a href="#">LOGIN</a>
+  </div>
+
+  <!-- Main navigation -->
+  <nav class="jdm-nav">
+    <div class="jdm-logo">
+      <span class="jdm-logo-jdm">JDM</span><span class="jdm-logo-products">products</span>
+    </div>
+    <div class="jdm-nav-links">
+      <a href="#">HOME</a>
+      <a href="#">ABOUT US</a>
+      <a href="#">PARTNERS</a>
+      <a href="#">SERVICES</a>
+      <a href="#">REGIONS</a>
+      <a href="#">CONTACT US</a>
+      <a href="#">MEET THE TEAM</a>
+      <a href="#">RESOURCES</a>
+    </div>
+  </nav>
+
+  <!-- Hero carousel -->
+  <section class="jdm-hero">
+    <span class="hero-arrow left">&#8249;</span>
+    <!-- Left: figure with products (CSS rendered) -->
+    <div class="hero-left">
+      <svg class="hero-figure" viewBox="0 0 400 520" xmlns="http://www.w3.org/2000/svg">
+        <!-- Stylized person silhouette with fitness gear -->
+        <defs>
+          <linearGradient id="skinGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#8B7355"/>
+            <stop offset="100%" stop-color="#6B5740"/>
+          </linearGradient>
+          <linearGradient id="shirtGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#f0f0f0"/>
+            <stop offset="100%" stop-color="#ddd"/>
+          </linearGradient>
+        </defs>
+        <!-- Body / torso in white shirt -->
+        <ellipse cx="200" cy="340" rx="75" ry="110" fill="url(#shirtGrad)"/>
+        <!-- Head -->
+        <circle cx="210" cy="140" r="52" fill="url(#skinGrad)"/>
+        <!-- Hair -->
+        <ellipse cx="210" cy="115" rx="48" ry="30" fill="#2a2a2a"/>
+        <!-- Neck -->
+        <rect x="193" y="185" width="34" height="35" rx="8" fill="url(#skinGrad)"/>
+        <!-- Left arm (extended, holding device) -->
+        <path d="M 130 260 Q 80 230 60 180 Q 50 160 70 150" stroke="url(#skinGrad)" stroke-width="28" fill="none" stroke-linecap="round"/>
+        <!-- Right arm -->
+        <path d="M 270 280 Q 310 260 330 230 Q 340 210 320 200" stroke="url(#skinGrad)" stroke-width="26" fill="none" stroke-linecap="round"/>
+        <!-- Fitness devices on arms (dark circular shapes) -->
+        <circle cx="62" cy="162" r="22" fill="#333"/>
+        <circle cx="62" cy="162" r="16" fill="#444"/>
+        <circle cx="85" cy="185" r="18" fill="#333"/>
+        <circle cx="85" cy="185" r="13" fill="#444"/>
+        <circle cx="52" cy="140" r="16" fill="#333"/>
+        <circle cx="52" cy="140" r="11" fill="#444"/>
+        <!-- Green indicator lights -->
+        <circle cx="62" cy="162" r="3" fill="#4ade80"/>
+        <circle cx="85" cy="185" r="2.5" fill="#4ade80"/>
+      </svg>
+    </div>
+    <!-- Right: Hyperice branding -->
+    <div class="hero-right">
+      <div class="hero-brand-mark">H</div>
+      <div class="hero-brand-name">Hyperice</div>
+      <div class="hero-btn">Learn More</div>
+    </div>
+    <span class="hero-arrow right">&#8250;</span>
+  </section>
+
+  <!-- Carousel dots -->
+  <div class="carousel-dots">
+    <div class="carousel-dot"></div>
+    <div class="carousel-dot"></div>
+    <div class="carousel-dot"></div>
+    <div class="carousel-dot hollow"></div>
+    <div class="carousel-dot"></div>
+    <div class="carousel-dot"></div>
+    <div class="carousel-dot"></div>
+  </div>
+
+</div>
+</div>
 
 <!-- ── Chat Bubble ────────────────────────────────── -->
 <button id="chat-bubble" onclick="toggleChat()" aria-label="Open chat">
