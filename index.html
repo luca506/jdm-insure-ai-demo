@@ -240,7 +240,9 @@ const STATE = {
   flowStep: 0,
   leadData: {},
   lastActivity: Date.now(),
-  timeoutFired: false
+  timeoutFired: false,
+  meaningfulInteractions: 0,
+  leadOffered: false
 };
 
 // ── DOM ─────────────────────────────────────────────────
@@ -379,7 +381,7 @@ function hideTyping() {
   if (t) t.remove();
 }
 
-function botSay(text, _unused, delay) {
+function botSay(text, delay) {
   const d = delay || Math.min(800 + text.length * 4, 2000);
   showTyping();
   setTimeout(() => {
@@ -505,6 +507,23 @@ function urgentPrefix() {
   return '';
 }
 
+// ── Early Lead Capture ──────────────────────────────────
+const LEAD_NUDGES = [
+  "I can provide much more specific information tailored to your business. Would it help if one of our team reached out? Just need your name and email — no obligation.",
+  "For more detailed, personalised information, I can have one of our team get in touch. Just a name and email if you're interested.",
+  "If you'd like, I can have our team send you detailed information specific to your needs — just need a quick email address."
+];
+
+function withLeadNudge(text) {
+  STATE.meaningfulInteractions++;
+  if (STATE.meaningfulInteractions >= 2 && !STATE.leadOffered && CTX.customerStatus !== 'existing' && !STATE.flow) {
+    STATE.leadOffered = true;
+    const nudge = LEAD_NUDGES[Math.floor(Math.random() * LEAD_NUDGES.length)];
+    text += `<br><br>${nudge}`;
+  }
+  return text;
+}
+
 
 // ═══════════════════════════════════════════════════════════
 //  CHAT TOGGLE & GREETING
@@ -527,7 +546,6 @@ function toggleChat() {
 function greet() {
   botSay(
     "Hi there, I'm <strong>Michael</strong> from <strong>JDM Products</strong>. I help retailers with product inquiries, stock availability, and partnership opportunities.<br><br>Whether you're an existing customer, interested in becoming a retail partner, or just exploring — I'm here to help. What can I do for you?",
-    null,
     800
   );
 }
@@ -576,9 +594,15 @@ function handleUserInput(raw) {
     handleExistingCustomerWelcome();
     return;
   }
-  if (match(text, ['new retailer','become a retailer','new partner','become a partner','partner with','partnership','open an account','open account','sign up','sign me up','want to sell','want to stock','start selling','stock your products','become a stockist','apply','set up an account','new account','onboard','reseller','how to partner','retail partner','stockist'])) {
+  // Commitment signals — user explicitly wants to become a partner
+  if (match(text, ['become a retailer','become a partner','become a stockist','open an account','open account','sign up','sign me up','want to sell','want to stock','start selling','stock your products','apply','set up an account','new account','onboard','i want to partner','i\'d like to partner','get started'])) {
     CTX.customerStatus = 'prospect';
     startRetailerFlow();
+    return;
+  }
+  // Informational — user is asking about partnerships, not committing yet
+  if (match(text, ['partnership','partner with','how to partner','retail partner','stockist','new retailer','new partner','reseller','what partnerships','types of partner','how does partner'])) {
+    handlePartnershipInfo();
     return;
   }
   if (match(text, ['just browsing','just looking','browsing','looking around','curious','explore'])) {
@@ -703,13 +727,13 @@ function handleUserInput(raw) {
 
   // 17. Greetings
   if (matchWord(text, ['hi','hello','hey','howdy','hiya','yo','sup']) || match(text, ['good morning','good afternoon','good evening'])) {
-    botSay("Hello! Great to hear from you. How can I help you today?", ['Our Brands', 'Become a Partner', 'Stock Availability']);
+    botSay("Hello. How can I help you today?");
     return;
   }
 
   // 18. Thanks
   if (match(text, ['thanks','thank you','cheers','appreciate','thx','tysm']) || matchWord(text, ['ta'])) {
-    botSay("You're welcome! Is there anything else I can help you with?", ['Yes, another question', 'No, that\'s all']);
+    botSay("You're welcome. Is there anything else I can help with?");
     return;
   }
 
@@ -778,8 +802,7 @@ function startRetailerFlow() {
   STATE.flowStep = 0;
   STATE.leadData = {};
   botSay(
-    "Great! JDM works with retail partners of all sizes — from independent shops to major chains.<br><br>To get started, what <strong>type of retail business</strong> do you operate? (e.g., sports shop, electronics store, online retailer, department store)",
-    ['Sports / Fitness', 'Electronics', 'Online Retail', 'Department Store', 'Other']
+    "Excellent — let's get that started. JDM works with retail partners of all sizes, from independent shops to major chains.<br><br>To connect you with the right person, what <strong>type of retail business</strong> do you operate? (e.g., sports shop, electronics store, online retailer, department store)"
   );
 }
 
@@ -791,7 +814,7 @@ function continueRetailerFlow(raw, text) {
     STATE.leadData.businessType = raw;
     if (!CTX.businessType) CTX.businessType = detectBusinessType(text) || raw;
     STATE.flowStep = 1;
-    botSay("Where are you <strong>located</strong>?", ['Ireland', 'UK', 'EU / Other']);
+    botSay("And where are you <strong>located</strong>?");
 
   } else if (step === 1) {
     STATE.leadData.location = raw;
@@ -805,14 +828,14 @@ function continueRetailerFlow(raw, text) {
   } else if (step === 2) {
     STATE.leadData.currentSetup = raw;
     STATE.flowStep = 3;
-    botSay("Which of our brands interest you most?", ['Garmin', 'Fitbit', 'Tonies', 'Echelon', 'Multiple / All']);
+    botSay("Which of our brands interest you most?");
 
   } else if (step === 3) {
     STATE.leadData.brandsOfInterest = raw;
     STATE.flowStep = 4;
     const ctx = contextualNote();
     botSay(
-      `${ctx ? ctx + 'we see really strong demand. ' : ''}Perfect! Based on what you've told me, you'd be a great fit for JDM. Our sales team will contact you within <strong>1-2 business days</strong> to discuss:<br><br>• Which brands suit your customer base<br>• Pricing and payment terms<br>• Marketing support available<br>• Getting you set up on our portal<br><br>Can I get your <strong>contact details</strong>? Let's start with your <strong>name</strong>.`
+      `${ctx ? ctx + 'we see really strong demand. ' : ''}Based on what you've told me, you'd be a strong fit for JDM. Our sales team will reach out within <strong>1-2 business days</strong> to discuss:<br><br>• Which brands suit your customer base<br>• Pricing and payment terms<br>• Marketing support available<br>• Getting you set up on our portal<br><br>Can I get your <strong>contact details</strong>? Let's start with your <strong>name</strong>.`
     );
 
   } else if (step === 4) {
@@ -844,8 +867,7 @@ function continueRetailerFlow(raw, text) {
       : '';
 
     botSay(
-      `Perfect! Thank you, <strong>${escHtml(name)}</strong>.<br><br>📋 Here's what happens next:<br>1. Our <strong>${escHtml(region)}</strong> sales manager will review your inquiry<br>2. They'll contact you at <strong>${escHtml(STATE.leadData.email)}</strong> within <strong>1-2 business days</strong><br>3. They'll discuss brands, pricing, terms, and how to get started<br><br>${brandNote}<br><br>In the meantime, feel free to browse or call us:<br>📞 Ireland: 01 2050500<br>📞 UK: 0203 4815711<br><br>Looking forward to working with you!`,
-      ['Ask another question', 'That\'s all, thanks']
+      `Thank you, <strong>${escHtml(name)}</strong>.<br><br>📋 Here's what happens next:<br>1. Our <strong>${escHtml(region)}</strong> sales manager will review your inquiry<br>2. They'll contact you at <strong>${escHtml(STATE.leadData.email)}</strong> within <strong>1-2 business days</strong><br>3. They'll discuss brands, pricing, terms, and how to get started<br><br>${brandNote}<br><br>In the meantime, feel free to browse or call us:<br>📞 Ireland: 01 2050500<br>📞 UK: 0203 4815711<br><br>Looking forward to working with you!`
     );
     console.log('[LEAD CAPTURED]', JSON.stringify(STATE.leadData, null, 2));
   }
@@ -856,7 +878,7 @@ function startLeadFlow(context) {
   STATE.flow = 'lead';
   STATE.flowStep = 0;
   STATE.leadData = { inquiry: context || '' };
-  botSay("I'd love to connect you with the right person. Could you share your <strong>name</strong> and <strong>business name</strong>?");
+  botSay("Let me connect you with the right person. Could you share your <strong>name</strong> and <strong>business name</strong>?");
 }
 
 function continueLeadFlow(raw, text) {
@@ -869,8 +891,7 @@ function continueLeadFlow(raw, text) {
     STATE.leadData.contactInfo = raw;
     STATE.flow = null;
     botSay(
-      "Thanks for that! I've flagged your inquiry and one of our <strong>sales managers</strong> will reach out within <strong>1-2 business days</strong>.<br><br>You can also call us directly:<br>📞 Ireland: 01 2050500<br>📞 UK: 0203 4815711<br><br>Anything else I can help with?",
-      ['Yes, another question', 'No, that\'s all']
+      "Noted — I've flagged your inquiry and one of our <strong>sales managers</strong> will reach out within <strong>1-2 business days</strong>.<br><br>You can also call us directly:<br>📞 Ireland: 01 2050500<br>📞 UK: 0203 4815711<br><br>Anything else I can help with?"
     );
     console.log('[LEAD CAPTURED]', JSON.stringify(STATE.leadData, null, 2));
   }
@@ -901,25 +922,44 @@ function handleExistingCustomerWelcome() {
   CTX.customerStatus = 'existing';
   STATE.flow = 'existingHelp';
   botSay(
-    "Perfect! I can help you with:<br><br>• Stock availability and orders<br>• Portal access issues<br>• Account inquiries<br>• Technical support<br>• Returns and warranty<br><br>What do you need help with today?",
-    ['Stock Availability', 'Portal Access', 'Returns / Warranty', 'Talk to Account Manager']
+    "I can help you with:<br><br>• Stock availability and orders<br>• Portal access issues<br>• Account inquiries<br>• Technical support<br>• Returns and warranty<br><br>What do you need help with today?"
   );
 }
 
 function handleBrowsing() {
   CTX.customerStatus = 'browsing';
   botSay(
-    "No problem! Feel free to ask me about:<br><br>• Our brands (Garmin, Fitbit, Tonies, and more)<br>• How to become a JDM retail partner<br>• Stock and delivery<br>• Our services and support<br><br>What would you like to know?",
-    ['Our Brands', 'Become a Partner', 'Services & Support']
+    "No problem. Feel free to ask me about:<br><br>• Our brands (Garmin, Fitbit, Tonies, and more)<br>• How to become a JDM retail partner<br>• Stock and delivery<br>• Our services and support<br><br>What would you like to know?"
   );
+}
+
+function handlePartnershipInfo() {
+  trackTopic('partnership');
+  let resp = "JDM works with <strong>3,000+ retail partners</strong> across Ireland, UK, and the EU — from independent shops to major chains.<br><br>A partnership with JDM means becoming a stockist who buys wholesale from us. We distribute leading brands including <strong>Garmin, Fitbit, Tonies, Echelon</strong>, and more.<br><br>As a retail partner, you get:<br>• Access to our full brand portfolio at wholesale pricing<br>• 1-3 day delivery from our Ireland and UK facilities<br>• Flexible payment terms (Net 30/60 for established accounts)<br>• Marketing support — POS materials, co-op marketing, social media content<br>• Dedicated account manager<br>• Real-time stock visibility via our B2B portal";
+
+  if (CTX.businessType) {
+    const bt = CTX.businessType;
+    const relevantBrands = {
+      sports: 'Garmin, Fitbit, and Echelon',
+      electronics: 'our full tech range',
+      children: 'Tonies',
+      gaming: 'SureFire Gaming',
+      home: 'AENO smart home products',
+      online: 'our full catalogue with dropship options'
+    };
+    const brands = relevantBrands[bt] || 'our brand portfolio';
+    resp += `<br><br>For ${bt} businesses, ${brands} tend to perform particularly well.`;
+  }
+
+  resp += "<br><br>To get started, we typically just need to understand your business — type of retail, location, and which brands interest you. Would you like to explore that?";
+
+  botSay(withLeadNudge(resp));
 }
 
 function handleBrandOverview() {
   trackTopic('brands');
-  botSay(
-    "JDM distributes a strong portfolio of leading consumer electronics brands:<br><br>• <strong>Garmin</strong> — Fitness, outdoor, marine, automotive, golf<br>• <strong>Fitbit</strong> — Wellness & fitness tracking<br>• <strong>Tonies</strong> — Children's audio entertainment<br>• <strong>Echelon</strong> — Connected fitness equipment<br>• <strong>Austere</strong> — Premium cables & accessories<br>• <strong>SureFire Gaming</strong> — Gaming accessories<br>• <strong>AENO</strong> — Smart home appliances<br>• <strong>Blackstone</strong> — BBQ griddles (exclusive UK distribution)<br>• Plus more across consumer electronics<br><br>Interested in any specific brand? I can go into more detail.",
-    ['Tell me about Garmin', 'Tell me about Tonies', 'Become a stockist']
-  );
+  let resp = "We distribute a portfolio of leading consumer electronics brands:<br><br>• <strong>Garmin</strong> — Fitness, outdoor, marine, automotive, golf<br>• <strong>Fitbit</strong> — Wellness & fitness tracking<br>• <strong>Tonies</strong> — Children's audio entertainment<br>• <strong>Echelon</strong> — Connected fitness equipment<br>• <strong>Austere</strong> — Premium cables & accessories<br>• <strong>SureFire Gaming</strong> — Gaming accessories<br>• <strong>AENO</strong> — Smart home appliances<br>• <strong>Blackstone</strong> — BBQ griddles (exclusive UK distribution)<br>• Plus more across consumer electronics<br><br>If you'd like more detail on any specific brand, just let me know.";
+  botSay(withLeadNudge(resp));
 }
 
 function handleSpecificBrand(brandKey) {
@@ -938,10 +978,10 @@ function handleSpecificBrand(brandKey) {
 
   if (CTX.customerStatus === 'existing') {
     response += `<br><br>For current stock levels and pricing, check the portal at <a href="https://b2b.jdmproducts.com" target="_blank">b2b.jdmproducts.com</a> or contact your account manager.`;
-    botSay(response, ['Check another brand', 'Stock availability', 'Contact my account manager']);
+    botSay(response);
   } else {
-    response += `<br><br>Are you interested in becoming a ${brand.name} stockist, or checking availability?`;
-    botSay(response, [`Stock ${brand.name}`, 'See all brands', 'Check availability']);
+    response += `<br><br>Would you like to know more about stocking ${brand.name}, or is there anything else I can help with?`;
+    botSay(withLeadNudge(response));
   }
 }
 
@@ -953,7 +993,7 @@ function handleStock(text) {
     if (CTX.mentionedBrands.length) {
       resp += ` For <strong>${CTX.mentionedBrands.map(b => BRAND_DB[b]?.name || b).join(', ')}</strong> specifically, we typically maintain strong stock levels.`;
     }
-    botSay(resp, ['Portal access help', 'Contact account manager']);
+    botSay(resp);
   } else {
     let resp = `${prefix}We maintain significant stock across our Ireland and UK facilities — local stock means fast delivery, not weeks from overseas.`;
     if (CTX.mentionedBrands.length) {
@@ -962,7 +1002,7 @@ function handleStock(text) {
     } else {
       resp += `<br><br>Which brand or product are you interested in? I can have our sales team provide current stock levels and lead times.`;
     }
-    botSay(resp, ['Garmin', 'Fitbit', 'Tonies', 'Contact sales team']);
+    botSay(withLeadNudge(resp));
   }
 }
 
@@ -986,9 +1026,9 @@ function handlePricing() {
   resp += `<br><br>Would you like me to have one of our account managers send you a tailored price list?`;
 
   if (CTX.customerStatus === 'existing') {
-    botSay(resp, ['Yes, send price list', 'Contact my account manager']);
+    botSay(resp);
   } else {
-    botSay(resp, ['Yes, contact me', 'Tell me more first']);
+    botSay(withLeadNudge(resp));
   }
 }
 
@@ -1001,7 +1041,7 @@ function handleDelivery() {
 
   resp += `<br><br>Drop shipping is also available for qualified accounts. Minimum order requirements and delivery costs vary by account type.`;
 
-  botSay(resp, ['Become a partner', 'Payment terms', 'Drop shipping info']);
+  botSay(withLeadNudge(resp));
 }
 
 function handlePaymentTerms() {
@@ -1012,7 +1052,7 @@ function handlePaymentTerms() {
     resp += `<br><br>Once you're set up as a JDM partner, we can work out payment terms that suit your cash flow needs.`;
   }
 
-  botSay(resp, ['Set up an account', 'Delivery info', 'Our brands']);
+  botSay(withLeadNudge(resp));
 }
 
 function handleReturns() {
@@ -1021,16 +1061,16 @@ function handleReturns() {
 
   if (CTX.customerStatus === 'existing') {
     resp += `<br><br>Your account manager can walk you through the exact process. What's your account name?`;
-    botSay(resp, ['Contact account manager', 'Call directly']);
+    botSay(resp);
   } else {
     resp += `<br><br>Once you're a JDM partner, you'll have dedicated support for all returns and warranty issues.`;
-    botSay(resp, ['Become a partner', 'Ask another question']);
+    botSay(withLeadNudge(resp));
   }
 }
 
 function handleMarketing() {
   const prefix = urgentPrefix();
-  let resp = `${prefix}JDM actively invests in supporting our retail partners! We provide:<br><br>📱 <strong>Social Media Support:</strong><br>• Daily content updates featuring our brands<br>• Co-brandable content you can use<br>• Product announcements and promotions<br><br>🏪 <strong>In-Store Support:</strong><br>• POS materials and displays<br>• Product demo units (for qualified accounts)<br>• Shelf talkers and signage<br><br>📊 <strong>Marketing Programs:</strong><br>• Co-op marketing opportunities<br>• Brand awareness campaigns<br>• Seasonal promotional support<br><br>🎓 <strong>Training & Events:</strong><br>• Product training sessions<br>• Trade show participation<br>• Consumer events and demos<br><br>This is included as part of being a JDM partner — we succeed when you succeed!`;
+  let resp = `${prefix}As a JDM partner, you get access to marketing support across several areas:<br><br>📱 <strong>Social Media Support:</strong><br>• Daily content updates featuring our brands<br>• Co-brandable content you can use<br>• Product announcements and promotions<br><br>🏪 <strong>In-Store Support:</strong><br>• POS materials and displays<br>• Product demo units (for qualified accounts)<br>• Shelf talkers and signage<br><br>📊 <strong>Marketing Programs:</strong><br>• Co-op marketing opportunities<br>• Brand awareness campaigns<br>• Seasonal promotional support<br><br>🎓 <strong>Training & Events:</strong><br>• Product training sessions<br>• Trade show participation<br>• Consumer events and demos<br><br>This is all included as part of being a JDM partner.`;
 
   if (CTX.businessType) {
     const support = {
@@ -1044,19 +1084,17 @@ function handleMarketing() {
     if (s) resp += `<br><br>For ${CTX.businessType} businesses, we typically provide ${s}.`;
   }
 
-  botSay(resp, ['Become a partner', 'Our brands', 'Pricing info']);
+  botSay(withLeadNudge(resp));
 }
 
 function handlePortal() {
   if (CTX.customerStatus === 'existing' || match('', [])) {
     botSay(
-      `The JDM partner portal is at: <a href="https://b2b.jdmproducts.com" target="_blank"><strong>b2b.jdmproducts.com</strong></a><br><br>Through the portal you can:<br>• Check real-time stock availability<br>• Place orders 24/7<br>• View order history and tracking<br>• Make payments<br>• Download invoices<br><br>Having trouble logging in? Common fixes:<br>• Forgotten password — Use the 'Reset Password' link<br>• Account not set up — Contact your account manager<br>• Technical issues — Clear browser cache or try a different browser<br><br>If you're still stuck, call us:<br>📞 Ireland: 01 2050500<br>📞 UK: 0203 4815711`,
-      ['Reset password help', 'Contact account manager']
+      `The JDM partner portal is at: <a href="https://b2b.jdmproducts.com" target="_blank"><strong>b2b.jdmproducts.com</strong></a><br><br>Through the portal you can:<br>• Check real-time stock availability<br>• Place orders 24/7<br>• View order history and tracking<br>• Make payments<br>• Download invoices<br><br>Having trouble logging in? Common fixes:<br>• Forgotten password — Use the 'Reset Password' link<br>• Account not set up — Contact your account manager<br>• Technical issues — Clear browser cache or try a different browser<br><br>If you're still stuck, call us:<br>📞 Ireland: 01 2050500<br>📞 UK: 0203 4815711`
     );
   } else {
     botSay(
-      `Once you're set up as a JDM retail partner, you'll get access to our B2B portal at <a href="https://b2b.jdmproducts.com" target="_blank"><strong>b2b.jdmproducts.com</strong></a> where you can check stock and place orders 24/7.<br><br>Interested in becoming a partner?`,
-      ['Yes, sign me up', 'Tell me more']
+      `Once you're set up as a JDM retail partner, you'll get access to our B2B portal at <a href="https://b2b.jdmproducts.com" target="_blank"><strong>b2b.jdmproducts.com</strong></a> where you can check stock and place orders 24/7.<br><br>Would you like to know more about becoming a partner?`
     );
   }
 }
@@ -1071,21 +1109,17 @@ function handleMinimumOrder() {
   }
 
   resp += `<br><br>This is something we work out during account setup based on your business needs.`;
-  botSay(resp, ['Set up an account', 'Talk to sales']);
+  botSay(withLeadNudge(resp));
 }
 
 function handleServices() {
-  botSay(
-    "JDM offers a complete suite of distribution services:<br><br>📦 <strong>Logistics</strong> — Pan-European freight network with facilities in Ireland and the UK. 1-3 day delivery.<br><br>👥 <strong>Sales Management</strong> — Regional sales teams covering UK and Ireland, managing 3,000+ accounts with dedicated account managers.<br><br>📢 <strong>Marketing</strong> — Social media, co-marketing, POS materials, brand awareness campaigns.<br><br>🎓 <strong>Events & Training</strong> — Trade shows, B2B events, product training for retail staff.<br><br>🔧 <strong>Technical Support</strong> — Warranty handling, after-sales service, returns processing.<br><br>Which of these interests you most?",
-    ['Logistics details', 'Marketing support', 'Become a partner']
-  );
+  let resp = "JDM offers a complete suite of distribution services:<br><br>📦 <strong>Logistics</strong> — Pan-European freight network with facilities in Ireland and the UK. 1-3 day delivery.<br><br>👥 <strong>Sales Management</strong> — Regional sales teams covering UK and Ireland, managing 3,000+ accounts with dedicated account managers.<br><br>📢 <strong>Marketing</strong> — Social media, co-marketing, POS materials, brand awareness campaigns.<br><br>🎓 <strong>Events & Training</strong> — Trade shows, B2B events, product training for retail staff.<br><br>🔧 <strong>Technical Support</strong> — Warranty handling, after-sales service, returns processing.<br><br>Would you like to know more about any of these areas?";
+  botSay(withLeadNudge(resp));
 }
 
 function handleAbout() {
-  botSay(
-    "JDM Products was founded in <strong>1999 by Jonathan Moore</strong> and has grown into an award-winning consumer electronics distributor.<br><br>📍 <strong>HQ:</strong> Unit 9, Ballywaltrim Business Park, Bray, Co. Wicklow, Ireland<br>📍 <strong>UK Office:</strong> Unit 9 & 10, SignalPark, WestPark, Daventry, NN11 4SA<br><br>Key facts:<br>• <strong>3,000+</strong> active retail accounts<br>• Coverage across <strong>Ireland, UK, + 5 EU countries</strong><br>• <strong>15+</strong> leading technology brands<br>• Regional sales teams across UK and Ireland<br>• Award-winning distributor<br>• B2B portal: <a href=\"https://b2b.jdmproducts.com\" target=\"_blank\">b2b.jdmproducts.com</a><br><br>We're your one-stop shop for consumer electronics distribution — from logistics to marketing support.",
-    ['Our brands', 'Become a partner', 'Contact us']
-  );
+  let resp = "JDM Products was founded in <strong>1999 by Jonathan Moore</strong> and has grown into an award-winning consumer electronics distributor.<br><br>📍 <strong>HQ:</strong> Unit 9, Ballywaltrim Business Park, Bray, Co. Wicklow, Ireland<br>📍 <strong>UK Office:</strong> Unit 9 & 10, SignalPark, WestPark, Daventry, NN11 4SA<br><br>Key facts:<br>• <strong>3,000+</strong> active retail accounts<br>• Coverage across <strong>Ireland, UK, + 5 EU countries</strong><br>• <strong>15+</strong> leading technology brands<br>• Regional sales teams across UK and Ireland<br>• Award-winning distributor<br>• B2B portal: <a href=\"https://b2b.jdmproducts.com\" target=\"_blank\">b2b.jdmproducts.com</a>";
+  botSay(withLeadNudge(resp));
 }
 
 function handleRegional() {
@@ -1099,35 +1133,32 @@ function handleRegional() {
     else resp += `<br><br>We're expanding our EU coverage and would be happy to discuss distribution in your region.`;
   }
 
-  botSay(resp, ['Delivery times', 'Become a partner', 'Contact regional manager']);
+  botSay(withLeadNudge(resp));
 }
 
 function handleContact() {
   botSay(
-    "You can reach the JDM team directly:<br><br>📞 <strong>Ireland:</strong> 01 2050500<br>📞 <strong>UK:</strong> 0203 4815711<br>📧 <strong>Email:</strong> <a href=\"mailto:sales@jdmproducts.com\">sales@jdmproducts.com</a><br>🌐 <strong>Website:</strong> <a href=\"https://jdmproducts.com\" target=\"_blank\">jdmproducts.com</a><br>🔑 <strong>B2B Portal:</strong> <a href=\"https://b2b.jdmproducts.com\" target=\"_blank\">b2b.jdmproducts.com</a><br><br>Or I can take your details and have the right team member reach out to you.",
-    ['Have someone call me', 'That\'s all I needed']
+    "You can reach the JDM team directly:<br><br>📞 <strong>Ireland:</strong> 01 2050500<br>📞 <strong>UK:</strong> 0203 4815711<br>📧 <strong>Email:</strong> <a href=\"mailto:sales@jdmproducts.com\">sales@jdmproducts.com</a><br>🌐 <strong>Website:</strong> <a href=\"https://jdmproducts.com\" target=\"_blank\">jdmproducts.com</a><br>🔑 <strong>B2B Portal:</strong> <a href=\"https://b2b.jdmproducts.com\" target=\"_blank\">b2b.jdmproducts.com</a><br><br>Or I can take your details and have the right team member reach out to you."
   );
 }
 
 function handleUrgent() {
   botSay(
-    "I understand this is time-sensitive. For the fastest response, call us directly:<br><br>📞 <strong>Ireland:</strong> 01 2050500<br>📞 <strong>UK:</strong> 0203 4815711<br><br>Alternatively, share your details here and I'll flag it as <strong>priority</strong> so our team picks it up immediately.",
-    ['Share my details', 'I\'ll call now']
+    "I understand this is time-sensitive. For the fastest response, call us directly:<br><br>📞 <strong>Ireland:</strong> 01 2050500<br>📞 <strong>UK:</strong> 0203 4815711<br><br>Alternatively, share your details here and I'll flag it as <strong>priority</strong> so our team picks it up immediately."
   );
 }
 
 function handleFrustrated(text) {
   botSay(
-    "I'm sorry you're experiencing issues. Let me make sure we get this sorted for you right away.<br><br>📞 For immediate help, call us:<br>• Ireland: 01 2050500<br>• UK: 0203 4815711<br><br>Or tell me more about the issue and I'll connect you with the right person.",
-    ['Share details', 'I\'ll call now']
+    "I'm sorry you're experiencing issues. Let me make sure we get this sorted for you right away.<br><br>📞 For immediate help, call us:<br>• Ireland: 01 2050500<br>• UK: 0203 4815711<br><br>Or tell me more about the issue and I'll connect you with the right person."
   );
 }
 
 function handleBuyingSignal(text) {
   if (CTX.customerStatus === 'existing') {
-    botSay("I'd be happy to help! Your account manager can provide detailed information. Would you like me to have them reach out, or is there something specific I can answer now?", ['Have them call me', 'I have a question']);
+    botSay("Your account manager can provide detailed information on that. Would you like me to have them reach out, or is there something specific I can answer now?");
   } else {
-    botSay("We'd love to help! To make sure I connect you with the right person, could you tell me a bit about your business? What type of retail operation are you running?", ['Sports / Fitness', 'Electronics', 'Online Retail', 'Other']);
+    botSay("To make sure I point you in the right direction, could you tell me a bit about your business? What type of retail operation are you running?");
     STATE.flow = 'retailer';
     STATE.flowStep = 0;
     STATE.leadData = { inquiry: text };
@@ -1140,7 +1171,7 @@ function handleBuyingSignal(text) {
 // ═══════════════════════════════════════════════════════════
 
 function handleObjectionExistingDistributor() {
-  let resp = "That's great that you have an existing relationship! Many of our 3,000+ retail partners work with multiple distributors — each brings different brands and strengths.<br><br>JDM's particular strengths are:<br>• <strong>Exclusive brands</strong> like Garmin (official distributor since 2015)<br>• <strong>Local stock</strong> = faster delivery than importing<br>• <strong>Strong marketing support</strong><br>• <strong>Multi-brand ordering</strong> (one order, multiple brands)";
+  let resp = "Understood — many of our 3,000+ retail partners actually work with multiple distributors — each brings different brands and strengths.<br><br>JDM's particular strengths are:<br>• <strong>Exclusive brands</strong> like Garmin (official distributor since 2015)<br>• <strong>Local stock</strong> = faster delivery than importing<br>• <strong>Strong marketing support</strong><br>• <strong>Multi-brand ordering</strong> (one order, multiple brands)";
 
   if (CTX.mentionedBrands.length) {
     const names = CTX.mentionedBrands.map(b => BRAND_DB[b]?.name || b).join(', ');
@@ -1148,25 +1179,25 @@ function handleObjectionExistingDistributor() {
   }
 
   resp += "<br><br>Even if you're happy with your current setup, it might be worth a conversation about complementing what you already have.";
-  botSay(resp, ['Tell me more', 'Not right now']);
+  botSay(resp);
 }
 
 function handleObjectionPrice() {
   let resp = "I appreciate that price is important for your margins. Our pricing varies significantly based on:<br><br>• Order volume (larger orders = better pricing)<br>• Payment terms<br>• Account history and relationship<br>• Product mix";
 
   resp += "<br><br>Also consider the total value beyond unit price:<br>• Local stock = no long lead times or large prepayments<br>• Marketing support included<br>• Warranty handling<br>• 1-3 day delivery<br><br>What volumes are you typically ordering? I can have our team review options that might work for your business.";
-  botSay(resp, ['Discuss volumes', 'Not right now']);
+  botSay(resp);
 }
 
 function handleObjectionDirect() {
-  let resp = "That's certainly an option for very large volumes!<br><br>Most retailers find working with a distributor like JDM more efficient because:<br><br>💰 <strong>Lower Minimums:</strong> Manufacturers often require container-loads; we break bulk<br>📦 <strong>Local Stock:</strong> Next-day delivery vs weeks from overseas<br>🎯 <strong>Multi-Brand:</strong> Order Garmin, Fitbit, Tonies in one transaction<br>💳 <strong>Better Terms:</strong> Net 30/60 vs prepayment for imports<br>📞 <strong>Local Support:</strong> We handle warranty, returns, technical queries<br>📊 <strong>Marketing:</strong> We provide POS materials and marketing support";
+  let resp = "That's an option if you're ordering in very large volumes.<br><br>Most retailers find working with a distributor like JDM more efficient because:<br><br>💰 <strong>Lower Minimums:</strong> Manufacturers often require container-loads; we break bulk<br>📦 <strong>Local Stock:</strong> Next-day delivery vs weeks from overseas<br>🎯 <strong>Multi-Brand:</strong> Order Garmin, Fitbit, Tonies in one transaction<br>💳 <strong>Better Terms:</strong> Net 30/60 vs prepayment for imports<br>📞 <strong>Local Support:</strong> We handle warranty, returns, technical queries<br>📊 <strong>Marketing:</strong> We provide POS materials and marketing support";
 
   if (CTX.businessType) {
     resp += `<br><br>For ${CTX.businessType} businesses, the flexibility usually outweighs any small price difference.`;
   }
 
   resp += "<br><br>Many of our retail partners tried direct importing but came back to us for the convenience. Want to discuss what works best for your scale?";
-  botSay(resp, ['Let\'s discuss', 'Good to know']);
+  botSay(resp);
 }
 
 function handleObjectionPriceMatch() {
@@ -1178,11 +1209,11 @@ function handleObjectionPriceMatch() {
   }
 
   resp += "<br><br>Let me connect you with our team who can put together a complete package comparison.";
-  botSay(resp, ['Connect me with sales', 'I\'ll think about it']);
+  botSay(resp);
 }
 
 function handleObjectionThinkAboutIt() {
-  let resp = "Absolutely, take your time! This is an important decision for your business.";
+  let resp = "Of course — take your time. It's an important decision for your business.";
 
   if (CTX.topicsDiscussed.length) {
     resp += `<br><br>We've covered ${CTX.topicsDiscussed.join(', ')} — if any of those raise questions later, just come back.`;
@@ -1195,7 +1226,7 @@ function handleObjectionThinkAboutIt() {
   }
 
   resp += "<br><br>Would it help if I sent you some information via email?";
-  botSay(resp, ['Yes, send info', 'I\'ll come back later']);
+  botSay(resp);
 }
 
 
@@ -1212,21 +1243,19 @@ function handleAffirmative(text) {
   } else if (CTX.customerStatus === 'prospect' || !CTX.customerStatus) {
     startLeadFlow('General interest');
   } else {
-    botSay("Great! What would you like to know more about?", ['Our Brands', 'Pricing', 'Delivery', 'Become a Partner']);
+    botSay("What would you like to know more about?");
   }
 }
 
 function handleOffTopic() {
   botSay(
-    "Ha! I'm specifically here to help with JDM Products and our electronics distribution services.<br><br>I can help you with:<br>• Our brands (Garmin, Fitbit, Tonies, etc.)<br>• Becoming a retail partner<br>• Stock and ordering<br>• Account support<br><br>What brings you to JDM today?",
-    ['Our Brands', 'Become a Partner', 'Just Browsing']
+    "I'm specifically here to help with JDM Products and our electronics distribution services.<br><br>I can help you with:<br>• Our brands (Garmin, Fitbit, Tonies, etc.)<br>• Becoming a retail partner<br>• Stock and ordering<br>• Account support<br><br>What brings you to JDM today?"
   );
 }
 
 function handleDemoQuestion() {
   botSay(
-    "Great question! This is a demonstration interface showing how our chatbot works. The production version connects to our full AI system which:<br><br>• Maintains complete conversation context<br>• Accesses real-time stock data<br>• Handles any question about your specific needs<br>• Integrates with our CRM and support systems<br>• Provides personalised responses based on your account history<br><br>Would you like to learn more about the full system?",
-    ['Tell me more', 'Back to browsing']
+    "This is a demonstration interface showing how our chatbot works. The production version connects to our full AI system which:<br><br>• Maintains complete conversation context<br>• Accesses real-time stock data<br>• Handles any question about your specific needs<br>• Integrates with our CRM and support systems<br>• Provides personalised responses based on your account history<br><br>Would you like to learn more about the full system?"
   );
 }
 
@@ -1237,8 +1266,7 @@ function handleFallback(text) {
 
   // Level 2 - guide them
   botSay(
-    "I want to make sure you get accurate information rather than guessing. Let me point you in the right direction.<br><br>Are you asking about:<br>• Products and brands we distribute<br>• Becoming a retail partner<br>• Orders and delivery (existing customers)<br>• Technical support<br>• Something else<br><br>The more I understand, the better I can help!",
-    ['Products & Brands', 'Become a Partner', 'Existing Customer Help', 'Contact Us']
+    "I want to make sure you get accurate information rather than guessing.<br><br>Are you asking about:<br>• Products and brands we distribute<br>• Becoming a retail partner<br>• Orders and delivery (existing customers)<br>• Technical support<br>• Something else<br><br>The more I understand, the better I can help."
   );
 }
 
