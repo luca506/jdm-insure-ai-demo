@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JDM Products | Michael Chatbot Demo</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="backdrop" aria-label="JDM homepage screenshot background">
+      <div class="overlay"></div>
+    </main>
+
+    <section class="chat-widget" aria-live="polite">
+      <button class="chat-toggle" id="chatToggle" aria-expanded="true" aria-controls="chatPanel">
+        <span class="avatar">M</span>
+        <span class="label">Chat with Michael</span>
+      </button>
+
+      <div class="chat-panel" id="chatPanel">
+        <header class="chat-header">
+          <div>
+            <h1>Michael</h1>
+            <p>JDM B2B assistant</p>
+          </div>
+          <button class="minimize" id="minimizeBtn" aria-label="Minimize chat">—</button>
+        </header>
+
+        <div class="chat-messages" id="chatMessages"></div>
+
+        <form class="chat-input-row" id="chatForm">
+          <input id="chatInput" type="text" placeholder="Ask about onboarding, stock, services..." autocomplete="off" required />
+          <button type="submit">Send</button>
+        </form>
+      </div>
+    </section>
+
+    <script src="script.js"></script>
+  </body>
+</html>
