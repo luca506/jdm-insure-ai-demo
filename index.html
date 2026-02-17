@@ -81,10 +81,10 @@ body {
 }
 .agent-avatar {
   width: 44px; height: 44px; border-radius: 50%;
-  background: rgba(255,255,255,.15); display: flex;
+  background: rgba(255,255,255,.2); display: flex;
   align-items: center; justify-content: center;
-  font-size: 18px; flex-shrink: 0;
-  border: 2px solid rgba(255,255,255,.25);
+  font-size: 20px; font-weight: 700; flex-shrink: 0;
+  border: 2px solid rgba(255,255,255,.3);
 }
 .agent-info h3 { font-size: 15px; font-weight: 700; letter-spacing: .2px; }
 .agent-info p { font-size: 11.5px; opacity: .85; margin-top: 2px; }
@@ -128,23 +128,6 @@ body {
 }
 .msg a { color: #111a6e; font-weight: 600; text-decoration: underline; }
 .msg.user a { color: #c5caff; }
-
-/* ── Quick Reply Buttons ─────────────────────── */
-.quick-replies {
-  display: flex; flex-wrap: wrap; gap: 6px;
-  align-self: flex-start; max-width: 90%;
-  animation: msgIn .3s ease-out;
-}
-.quick-replies button {
-  padding: 8px 14px; border-radius: 18px;
-  border: 1.5px solid #111a6e; background: #fff;
-  color: #111a6e; font-size: 12.5px; font-weight: 500;
-  cursor: pointer; transition: all .15s;
-  font-family: inherit;
-}
-.quick-replies button:hover {
-  background: #111a6e; color: #fff;
-}
 
 /* ── Typing Indicator ────────────────────────── */
 .typing-indicator {
@@ -217,10 +200,10 @@ body {
 
 <div id="chat-window">
   <div class="chat-header">
-    <div class="agent-avatar">💬</div>
+    <div class="agent-avatar">M</div>
     <div class="agent-info">
-      <h3>JDM Assistant</h3>
-      <p><span class="online-dot"></span>Consumer Electronics Distribution</p>
+      <h3>Michael</h3>
+      <p><span class="online-dot"></span>JDM Products &middot; Online</p>
     </div>
   </div>
   <div class="chat-messages" id="chat-messages"></div>
@@ -228,7 +211,7 @@ body {
     <input type="text" id="chat-input" placeholder="Type your message..." autocomplete="off" />
     <button onclick="sendMessage()" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
   </div>
-  <div class="powered-by">Powered by insureAI &middot; Demo</div>
+  <div class="powered-by">Powered by braind AI &middot; Demo</div>
 </div>
 
 <script>
@@ -257,8 +240,7 @@ const STATE = {
   flowStep: 0,
   leadData: {},
   lastActivity: Date.now(),
-  timeoutFired: false,
-  buttonsDisabled: false
+  timeoutFired: false
 };
 
 // ── DOM ─────────────────────────────────────────────────
@@ -382,29 +364,6 @@ function addMsg(html, sender) {
   scrollBottom();
 }
 
-function addButtons(labels) {
-  const wrap = document.createElement('div');
-  wrap.className = 'quick-replies';
-  labels.forEach(label => {
-    const btn = document.createElement('button');
-    btn.textContent = label;
-    btn.onclick = () => {
-      if (STATE.buttonsDisabled) return;
-      // Disable all current quick-reply buttons
-      wrap.querySelectorAll('button').forEach(b => {
-        b.disabled = true;
-        b.style.opacity = '.5';
-        b.style.cursor = 'default';
-      });
-      STATE.buttonsDisabled = false;
-      handleUserInput(label);
-    };
-    wrap.appendChild(btn);
-  });
-  $msgs.appendChild(wrap);
-  scrollBottom();
-}
-
 function showTyping() {
   hideTyping();
   const d = document.createElement('div');
@@ -420,15 +379,12 @@ function hideTyping() {
   if (t) t.remove();
 }
 
-function botSay(text, buttons, delay) {
+function botSay(text, _unused, delay) {
   const d = delay || Math.min(800 + text.length * 4, 2000);
   showTyping();
   setTimeout(() => {
     hideTyping();
     addMsg(text, 'bot');
-    if (buttons && buttons.length) {
-      setTimeout(() => addButtons(buttons), 200);
-    }
   }, d);
 }
 
@@ -570,8 +526,8 @@ function toggleChat() {
 
 function greet() {
   botSay(
-    "Hi! I'm the <strong>JDM Assistant</strong>. I help retailers with product inquiries, stock availability, and partnership opportunities.<br><br>Are you an existing customer or interested in becoming a JDM retail partner?",
-    ['Existing Customer', 'New Retailer', 'Just Browsing'],
+    "Hi there, I'm <strong>Michael</strong> from <strong>JDM Products</strong>. I help retailers with product inquiries, stock availability, and partnership opportunities.<br><br>Whether you're an existing customer, interested in becoming a retail partner, or just exploring — I'm here to help. What can I do for you?",
+    null,
     800
   );
 }
@@ -580,7 +536,7 @@ function greet() {
 setInterval(() => {
   if (STATE.open && !STATE.timeoutFired && Date.now() - STATE.lastActivity > 300000) {
     STATE.timeoutFired = true;
-    botSay("Still here if you need anything! Feel free to ask a question or I can connect you with our team.", ['Talk to sales', 'Browse brands']);
+    botSay("Still here if you need anything! Feel free to ask a question or I can connect you with our team.");
   }
 }, 30000);
 
