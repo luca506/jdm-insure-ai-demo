@@ -576,7 +576,7 @@ function handleUserInput(raw) {
     handleExistingCustomerWelcome();
     return;
   }
-  if (match(text, ['new retailer','become a retailer','new partner','become a partner','open an account','open account','sign up','sign me up','want to sell','want to stock','start selling','stock your products','become a stockist','apply','set up an account','new account','onboard','reseller','join'])) {
+  if (match(text, ['new retailer','become a retailer','new partner','become a partner','partner with','partnership','open an account','open account','sign up','sign me up','want to sell','want to stock','start selling','stock your products','become a stockist','apply','set up an account','new account','onboard','reseller','how to partner','retail partner','stockist'])) {
     CTX.customerStatus = 'prospect';
     startRetailerFlow();
     return;
@@ -609,7 +609,7 @@ function handleUserInput(raw) {
   }
 
   // 5. Delivery / logistics
-  if (match(text, ['delivery','shipping','freight','logistics','how long','deliver','ship','transport','drop ship','dropship','drop shipping'])) {
+  if (match(text, ['delivery','shipping','freight','logistics','deliver','transport','drop ship','dropship','drop shipping','courier','dispatch'])) {
     trackTopic('delivery');
     handleDelivery();
     return;
@@ -630,7 +630,7 @@ function handleUserInput(raw) {
   }
 
   // 8. Marketing support
-  if (match(text, ['marketing','advertising','social media','pos','point of sale','display','displays','promotional','materials','co-op','co-marketing','brand awareness'])) {
+  if (match(text, ['marketing','advertising','social media','pos materials','pos display','point of sale','in-store display','promotional','co-op','co-marketing','brand awareness'])) {
     trackTopic('marketing');
     handleMarketing();
     return;
@@ -702,13 +702,13 @@ function handleUserInput(raw) {
   }
 
   // 17. Greetings
-  if (match(text, ['hi','hello','hey','good morning','good afternoon','good evening','howdy','hiya','yo','sup','morning','afternoon','evening'])) {
+  if (matchWord(text, ['hi','hello','hey','howdy','hiya','yo','sup']) || match(text, ['good morning','good afternoon','good evening'])) {
     botSay("Hello! Great to hear from you. How can I help you today?", ['Our Brands', 'Become a Partner', 'Stock Availability']);
     return;
   }
 
   // 18. Thanks
-  if (match(text, ['thanks','thank you','cheers','ta','appreciate','thx','tysm','thank'])) {
+  if (match(text, ['thanks','thank you','cheers','appreciate','thx','tysm']) || matchWord(text, ['ta'])) {
     botSay("You're welcome! Is there anything else I can help you with?", ['Yes, another question', 'No, that\'s all']);
     return;
   }
@@ -720,7 +720,7 @@ function handleUserInput(raw) {
   }
 
   // 20. Yes / agreement (contextual)
-  if (match(text, ['yes','yeah','yep','sure','ok','okay','go ahead','please','absolutely','definitely','yes please'])) {
+  if (match(text, ['yes please','go ahead','absolutely','definitely']) || matchWord(text, ['yes','yeah','yep','sure','ok','okay','please'])) {
     handleAffirmative(text);
     return;
   }
