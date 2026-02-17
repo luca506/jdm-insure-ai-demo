@@ -1,0 +1,46 @@
+{
+  "company": {
+    "name": "JDM Products",
+    "website": "https://jdmproducts.com",
+    "founded": 1999,
+    "founder": "Jonathan Moore",
+    "type": "B2B consumer electronics distributor",
+    "positioning": "Award-winning distributor focused on logistics and retail partnerships"
+  },
+  "markets": {
+    "core": ["Ireland", "UK"],
+    "expansion": "Expanded into 5 additional EU countries in 2022"
+  },
+  "brands": [
+    "Garmin",
+    "Fitbit",
+    "Tonies",
+    "Echelon",
+    "Austere",
+    "SureFire Gaming",
+    "AENO"
+  ],
+  "services": {
+    "logistics": "Pan-European freight network with facilities in Ireland and UK",
+    "marketing": "Social media support, co-marketing opportunities, brand awareness campaigns",
+    "sales_management": "Regional sales team covering UK and Ireland, serving 3000+ active accounts",
+    "events_training": "Trade shows, B2B events, product training, consumer events"
+  },
+  "support": {
+    "portal": "https://b2b.jdmproducts.com",
+    "portal_create": "https://b2b.jdmproducts.com/account/create",
+    "phones": {
+      "ireland": "+353 1 2050500",
+      "uk": "+44 0203 4815711"
+    }
+  },
+  "lead_capture_fields": [
+    "Business name",
+    "Contact person name",
+    "Role/title",
+    "Email",
+    "Phone",
+    "Location (country)",
+    "Brief description of inquiry"
+  ]
+}
