@@ -9,135 +9,35 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: #f0f4f8;
+    background: #0a0a1a;
     overflow: hidden;
     height: 100vh;
     width: 100vw;
   }
 
-  /* ── Background website screenshot ────────────────── */
+  /* ── Full-screen website background ────────────────── */
   #site-bg {
     position: fixed; inset: 0;
     width: 100%; height: 100%;
     z-index: 0;
-    overflow-y: auto;
-    background: #ffffff;
+    border: none;
   }
-
-  /* ── Simulated JDM Products homepage ──────────────── */
-  .jdm-site { min-height: 100vh; color: #333; }
-
-  /* Nav */
-  .jdm-nav {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 40px; height: 80px;
-    background: #fff; border-bottom: 3px solid #0055a5;
-    box-shadow: 0 2px 8px rgba(0,0,0,.06);
-    position: sticky; top: 0; z-index: 5;
+  /* Screenshot image as background */
+  #site-bg-img {
+    position: fixed; inset: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    object-fit: cover;
+    object-position: top center;
   }
-  .jdm-logo {
-    font-size: 28px; font-weight: 800; letter-spacing: -0.5px;
-    color: #0055a5;
+  /* Fallback iframe (hidden by default, shown if no screenshot) */
+  #site-bg-iframe {
+    position: fixed; inset: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    border: none;
+    display: none;
   }
-  .jdm-logo span { color: #e63946; }
-  .jdm-nav-links { display: flex; gap: 28px; }
-  .jdm-nav-links a {
-    text-decoration: none; color: #333; font-size: 14px;
-    font-weight: 600; text-transform: uppercase; letter-spacing: .5px;
-    transition: color .2s;
-  }
-  .jdm-nav-links a:hover { color: #0055a5; }
-
-  /* Hero */
-  .jdm-hero {
-    background: linear-gradient(135deg, #0055a5 0%, #003d7a 60%, #001f3f 100%);
-    color: #fff; padding: 100px 60px; text-align: center;
-    position: relative; overflow: hidden;
-  }
-  .jdm-hero::before {
-    content: ''; position: absolute; inset: 0;
-    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
-  }
-  .jdm-hero h1 {
-    font-size: 48px; font-weight: 800; margin-bottom: 20px;
-    position: relative;
-  }
-  .jdm-hero p {
-    font-size: 20px; max-width: 700px; margin: 0 auto 36px;
-    opacity: .9; line-height: 1.6; position: relative;
-  }
-  .jdm-hero-btn {
-    display: inline-block; padding: 14px 40px;
-    background: #e63946; color: #fff; border: none;
-    border-radius: 6px; font-size: 16px; font-weight: 700;
-    text-decoration: none; cursor: pointer; position: relative;
-    transition: transform .15s, box-shadow .15s;
-  }
-  .jdm-hero-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.25); }
-
-  /* Brands Strip */
-  .jdm-brands {
-    background: #f8f9fa; padding: 50px 40px; text-align: center;
-  }
-  .jdm-brands h2 {
-    font-size: 14px; text-transform: uppercase; letter-spacing: 2px;
-    color: #888; margin-bottom: 30px;
-  }
-  .brand-logos {
-    display: flex; justify-content: center; align-items: center;
-    gap: 50px; flex-wrap: wrap;
-  }
-  .brand-logo {
-    font-size: 22px; font-weight: 700; color: #aab;
-    opacity: .6; letter-spacing: 1px;
-  }
-
-  /* Features */
-  .jdm-features {
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 0; background: #fff;
-  }
-  .jdm-feature {
-    padding: 50px 30px; text-align: center;
-    border-right: 1px solid #eee; border-bottom: 1px solid #eee;
-    transition: background .2s;
-  }
-  .jdm-feature:hover { background: #f0f7ff; }
-  .jdm-feature:last-child { border-right: none; }
-  .feature-icon {
-    width: 60px; height: 60px; margin: 0 auto 18px;
-    background: #e8f0fe; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 26px; color: #0055a5;
-  }
-  .jdm-feature h3 { font-size: 16px; margin-bottom: 10px; color: #222; }
-  .jdm-feature p { font-size: 13px; color: #666; line-height: 1.5; }
-
-  /* Stats */
-  .jdm-stats {
-    background: #0055a5; color: #fff;
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    text-align: center; padding: 50px 40px;
-  }
-  .stat h3 { font-size: 42px; font-weight: 800; }
-  .stat p { font-size: 14px; opacity: .8; margin-top: 6px; text-transform: uppercase; letter-spacing: 1px; }
-
-  /* CTA */
-  .jdm-cta {
-    background: #f8f9fa; padding: 70px 40px; text-align: center;
-  }
-  .jdm-cta h2 { font-size: 32px; color: #222; margin-bottom: 14px; }
-  .jdm-cta p { color: #666; margin-bottom: 30px; font-size: 16px; }
-
-  /* Footer */
-  .jdm-footer {
-    background: #1a1a2e; color: #aaa; padding: 40px 60px;
-    display: flex; justify-content: space-between; align-items: flex-start;
-    flex-wrap: wrap; gap: 30px; font-size: 13px;
-  }
-  .footer-col h4 { color: #fff; margin-bottom: 12px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
-  .footer-col p, .footer-col a { color: #888; text-decoration: none; display: block; margin-bottom: 6px; line-height: 1.6; }
-  .footer-col a:hover { color: #ccc; }
 
   /* ── Chat Widget ──────────────────────────────────── */
   #chat-bubble {
@@ -245,19 +145,6 @@
   .msg a { color: inherit; font-weight: 600; text-decoration: underline; }
   .msg.bot a { color: #0055a5; }
 
-  /* Quick Replies */
-  .quick-replies {
-    display: flex; flex-wrap: wrap; gap: 8px;
-    padding: 4px 0 8px; animation: msgIn .3s ease-out;
-  }
-  .quick-btn {
-    padding: 8px 16px; background: #fff; color: #0055a5;
-    border: 1.5px solid #0055a5; border-radius: 20px;
-    font-size: 13px; font-weight: 600; cursor: pointer;
-    transition: all .15s; white-space: nowrap;
-  }
-  .quick-btn:hover { background: #0055a5; color: #fff; }
-
   /* Typing indicator */
   .typing-indicator {
     align-self: flex-start;
@@ -315,118 +202,15 @@
       height: calc(100vh - 120px);
       border-radius: 12px;
     }
-    .jdm-hero h1 { font-size: 28px; }
-    .jdm-features { grid-template-columns: repeat(2, 1fr); }
-    .jdm-stats { grid-template-columns: repeat(2, 1fr); gap: 20px; }
-    .jdm-nav { padding: 0 16px; }
-    .jdm-nav-links { display: none; }
   }
 </style>
 </head>
 <body>
 
-<!-- ── Simulated JDM Products Website Background ──── -->
-<div id="site-bg">
-<div class="jdm-site">
-
-  <!-- Navigation -->
-  <nav class="jdm-nav">
-    <div class="jdm-logo">JDM<span>.</span> Products</div>
-    <div class="jdm-nav-links">
-      <a href="#">Home</a>
-      <a href="#">Brands</a>
-      <a href="#">Services</a>
-      <a href="#">About</a>
-      <a href="#">B2B Portal</a>
-      <a href="#">Contact</a>
-    </div>
-  </nav>
-
-  <!-- Hero Section -->
-  <section class="jdm-hero">
-    <h1>Europe's Award-Winning<br>Technology Distributor</h1>
-    <p>Connecting leading consumer electronics brands with 3,000+ retail partners across Ireland, UK and Europe since 1999.</p>
-    <a href="#" class="jdm-hero-btn">Become a Retail Partner</a>
-  </section>
-
-  <!-- Brand Strip -->
-  <section class="jdm-brands">
-    <h2>Brands We Distribute</h2>
-    <div class="brand-logos">
-      <div class="brand-logo">GARMIN</div>
-      <div class="brand-logo">FITBIT</div>
-      <div class="brand-logo">tonies</div>
-      <div class="brand-logo">ECHELON</div>
-      <div class="brand-logo">AUSTERE</div>
-      <div class="brand-logo">SUREFIRE</div>
-      <div class="brand-logo">AENO</div>
-      <div class="brand-logo">15+ MORE</div>
-    </div>
-  </section>
-
-  <!-- Features -->
-  <section class="jdm-features">
-    <div class="jdm-feature">
-      <div class="feature-icon">&#128666;</div>
-      <h3>Pan-European Logistics</h3>
-      <p>Advanced freight network with facilities in Ireland &amp; UK, delivering across Europe.</p>
-    </div>
-    <div class="jdm-feature">
-      <div class="feature-icon">&#128200;</div>
-      <h3>Sales Management</h3>
-      <p>Regional sales team covering UK &amp; Ireland with 3,000+ active accounts.</p>
-    </div>
-    <div class="jdm-feature">
-      <div class="feature-icon">&#128227;</div>
-      <h3>Marketing Support</h3>
-      <p>Social media, co-marketing, brand awareness campaigns for your products.</p>
-    </div>
-    <div class="jdm-feature">
-      <div class="feature-icon">&#127891;</div>
-      <h3>Events &amp; Training</h3>
-      <p>Trade shows, B2B events, product training, and consumer events.</p>
-    </div>
-  </section>
-
-  <!-- Stats -->
-  <section class="jdm-stats">
-    <div class="stat"><h3>25+</h3><p>Years Experience</p></div>
-    <div class="stat"><h3>3,000+</h3><p>Active Accounts</p></div>
-    <div class="stat"><h3>15+</h3><p>Leading Brands</p></div>
-    <div class="stat"><h3>7+</h3><p>Countries Served</p></div>
-  </section>
-
-  <!-- CTA -->
-  <section class="jdm-cta">
-    <h2>Ready to Partner with JDM?</h2>
-    <p>Join 3,000+ retailers across Europe. Our sales team is ready to discuss your needs.</p>
-    <a href="#" class="jdm-hero-btn">Get in Touch</a>
-  </section>
-
-  <!-- Footer -->
-  <footer class="jdm-footer">
-    <div class="footer-col">
-      <h4>JDM Products</h4>
-      <p>Award-winning consumer electronics distributor. Established 1999 by Jonathan Moore.</p>
-      <p>Ireland | UK | Europe</p>
-    </div>
-    <div class="footer-col">
-      <h4>Quick Links</h4>
-      <a href="#">B2B Portal Login</a>
-      <a href="#">Become a Retailer</a>
-      <a href="#">Our Brands</a>
-      <a href="#">Services</a>
-    </div>
-    <div class="footer-col">
-      <h4>Contact</h4>
-      <p>Ireland: +353 1 2050500</p>
-      <p>UK: +44 203 4815711</p>
-      <a href="#">info@jdmproducts.com</a>
-    </div>
-  </footer>
-
-</div>
-</div>
+<!-- ── Full-screen JDM Products website background ──── -->
+<img id="site-bg-img" src="screenshot.png" alt="JDM Products Website"
+     onerror="this.style.display='none'; document.getElementById('site-bg-iframe').style.display='block';" />
+<iframe id="site-bg-iframe" src="https://jdmproducts.com" title="JDM Products"></iframe>
 
 <!-- ── Chat Bubble ────────────────────────────────── -->
 <button id="chat-bubble" onclick="toggleChat()" aria-label="Open chat">
@@ -456,8 +240,8 @@
 // ── State ────────────────────────────────────────────
 const STATE = {
   open: false,
-  context: {},       // remembered info about the user
-  conversationFlow: null, // active multi-step flow
+  context: {},
+  conversationFlow: null,
   flowStep: 0,
   leadData: {},
   greeted: false
@@ -474,7 +258,6 @@ const BRAND_ALIASES = {
   'aneo':'aeno','aino':'aeno'
 };
 
-// Business hours: Mon-Fri 9-17 GMT
 function isBusinessHours() {
   const now = new Date();
   const utcH = now.getUTCHours();
@@ -501,24 +284,6 @@ function addMsg(text, sender) {
   scrollBottom();
 }
 
-function addQuickReplies(options) {
-  const wrap = document.createElement('div');
-  wrap.className = 'quick-replies';
-  options.forEach(opt => {
-    const b = document.createElement('button');
-    b.className = 'quick-btn';
-    b.textContent = opt;
-    b.onclick = () => {
-      // Remove all quick-reply containers
-      document.querySelectorAll('.quick-replies').forEach(el => el.remove());
-      handleUserInput(opt);
-    };
-    wrap.appendChild(b);
-  });
-  $msgs.appendChild(wrap);
-  scrollBottom();
-}
-
 function showTyping() {
   const d = document.createElement('div');
   d.className = 'typing-indicator';
@@ -533,15 +298,12 @@ function hideTyping() {
   if (t) t.remove();
 }
 
-function botReply(text, quickReplies, delay) {
+function botReply(text, delay) {
   const d = delay || (600 + Math.min(text.length * 8, 1200));
   showTyping();
   setTimeout(() => {
     hideTyping();
     addMsg(text, 'bot');
-    if (quickReplies && quickReplies.length) {
-      setTimeout(() => addQuickReplies(quickReplies), 200);
-    }
   }, d);
 }
 
@@ -563,11 +325,10 @@ function toggleChat() {
 // ── Greet ────────────────────────────────────────────
 function greet() {
   const hourNote = isBusinessHours()
-    ? "Our team is available right now."
-    : "Our office is currently closed, but I can still help and have someone follow up when we're back.";
+    ? "Our team is available right now if you need anything."
+    : "Our office is currently closed, but I'm here to help and can have someone follow up when we're back.";
   botReply(
-    `Hi there! I'm <strong>Michael</strong>, your virtual assistant at <strong>JDM Products</strong>. ${hourNote}<br><br>How can I help you today?`,
-    ['Become a Retailer', 'Brand Enquiry', 'Existing Customer', 'Services Info'],
+    `Hi there, I'm <strong>Michael</strong> from <strong>JDM Products</strong>. ${hourNote}<br><br>Whether you're looking to become a retail partner, have questions about our brands, or need support with an existing account, I'm happy to help. What can I do for you?`,
     800
   );
 }
@@ -593,14 +354,15 @@ function handleUserInput(raw) {
   }
 
   // ── Intent detection ──────────────────────────────
+
   // Retailer onboarding
-  if (match(text, ['become a retailer','open an account','retailer','reseller','partner','onboard','sign up','new account','join','want to sell','want to stock','become a partner','apply'])) {
+  if (match(text, ['become a retailer','open an account','retailer','reseller','partner','onboard','sign up','new account','join','want to sell','want to stock','become a partner','apply','set up an account'])) {
     startRetailerFlow();
     return;
   }
 
   // Brand / product inquiry
-  if (match(text, ['brand','product','stock','distribute','carry','available','range','catalogue','catalog','brand enquiry','brand inquiry','what do you sell'])) {
+  if (match(text, ['brand','product','stock','distribute','carry','available','range','catalogue','catalog','what do you sell'])) {
     handleBrandInquiry(text);
     return;
   }
@@ -613,25 +375,25 @@ function handleUserInput(raw) {
   }
 
   // Existing customer support
-  if (match(text, ['existing customer','portal','login','log in','can\'t access','order','where\'s my order','tracking','pricing','price list','my account','account manager','existing'])) {
+  if (match(text, ['existing customer','portal','login','log in','can\'t access','order','where\'s my order','tracking','pricing','price list','my account','account manager'])) {
     handleExistingCustomer(text);
     return;
   }
 
   // Services
-  if (match(text, ['services','logistics','marketing','training','events','freight','support','what do you offer','services info'])) {
+  if (match(text, ['services','logistics','marketing','training','events','freight','what do you offer'])) {
     handleServicesInquiry(text);
     return;
   }
 
   // Regional / expansion
-  if (match(text, ['region','country','countries','europe','european','expand','expansion','ireland','uk','cover','territory','where do you'])) {
+  if (match(text, ['region','country','countries','europe','european','expand','expansion','cover','territory','where do you'])) {
     handleRegional(text);
     return;
   }
 
   // Buying signals / lead qualification
-  if (match(text, ['interested','talk about','discuss','looking for','need','want to','considering','exploring'])) {
+  if (match(text, ['interested in','talk about','discuss','looking for','considering','exploring'])) {
     handleBuyingSignal(text);
     return;
   }
@@ -644,22 +406,19 @@ function handleUserInput(raw) {
 
   // Greeting
   if (match(text, ['hi','hello','hey','good morning','good afternoon','good evening','howdy','hiya'])) {
-    botReply(
-      "Hello! Great to hear from you. How can I help you today?",
-      ['Become a Retailer', 'Brand Enquiry', 'Existing Customer', 'Services Info']
-    );
+    botReply("Hello! Great to hear from you. How can I help you today?");
     return;
   }
 
   // Thanks
   if (match(text, ['thanks','thank you','cheers','ta','appreciate'])) {
-    botReply("You're welcome! Is there anything else I can help you with?", ['Yes, another question', 'No, that\'s all']);
+    botReply("You're very welcome! If anything else comes up, don't hesitate to ask. We're always here to help.");
     return;
   }
 
   // Goodbye
-  if (match(text, ['bye','goodbye','that\'s all','no thanks','no, that\'s all'])) {
-    botReply("Thanks for chatting with JDM Products! Don't hesitate to reach out anytime. Have a great day!");
+  if (match(text, ['bye','goodbye','that\'s all','no thanks','all good','no that\'s it'])) {
+    botReply("Thanks for chatting with us! Wishing you all the best, and don't hesitate to reach out anytime. Have a great day.");
     return;
   }
 
@@ -670,10 +429,9 @@ function handleUserInput(raw) {
   }
 
   // About JDM
-  if (match(text, ['about jdm','who is jdm','tell me about','company','history','founded'])) {
+  if (match(text, ['about jdm','who is jdm','tell me about','company','history','founded','who are you'])) {
     botReply(
-      "JDM Products was established in <strong>1999 by Jonathan Moore</strong> and has grown into an award-winning consumer electronics distributor. We partner with 15+ leading technology brands and serve 3,000+ active retail accounts across Ireland, the UK, and Europe.<br><br>Would you like to know more about our services or becoming a partner?",
-      ['Our Services', 'Become a Retailer', 'Our Brands']
+      "JDM Products was established in <strong>1999 by Jonathan Moore</strong> and has grown into an award-winning consumer electronics distributor. We partner with 15+ leading technology brands and serve over 3,000 active retail accounts across Ireland, the UK, and expanding into mainland Europe.<br><br>Is there something specific about JDM I can help you with?"
     );
     return;
   }
@@ -682,12 +440,11 @@ function handleUserInput(raw) {
   handleFallback();
 }
 
-// ── Helper: keyword matching ────────────────────────
+// ── Helpers ─────────────────────────────────────────
 function match(text, keywords) {
   return keywords.some(k => text.includes(k));
 }
 
-// ── Helper: detect brand names (with typo handling) ─
 function detectBrand(text) {
   for (const [alias, real] of Object.entries(BRAND_ALIASES)) {
     if (text.includes(alias)) return real;
@@ -698,23 +455,35 @@ function detectBrand(text) {
   return null;
 }
 
+function escHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+// ── Conversation Flows ──────────────────────────────
+function continueFlow(raw, text) {
+  const flow = STATE.conversationFlow;
+  if (flow === 'retailer') continueRetailerFlow(raw, text);
+  else if (flow === 'lead') continueLeadFlow(raw, text);
+  else if (flow === 'fallback') continueFallbackFlow(raw, text);
+  else if (flow === 'buyingSignal') {
+    STATE.leadData.businessType = raw;
+    STATE.conversationFlow = 'lead';
+    STATE.flowStep = 0;
+    botReply("Thanks for that. Could you share your <strong>business name</strong> and <strong>location</strong> so I can point you to the right person?");
+  }
+  else { STATE.conversationFlow = null; handleUserInput(raw); }
+}
+
 // ── Retailer Onboarding Flow ────────────────────────
 function startRetailerFlow() {
   STATE.conversationFlow = 'retailer';
   STATE.flowStep = 0;
   STATE.leadData = {};
   botReply(
-    "Fantastic! We're always looking for great retail partners. Let me collect a few details to get you started.<br><br>What <strong>type of retail business</strong> do you operate?",
-    ['Electronics Shop', 'Online Retailer', 'Department Store', 'Other']
+    "That's great to hear — we're always keen to connect with new retail partners. I'll just need a few details to get things moving.<br><br>First off, what <strong>type of retail business</strong> do you operate? For example, an electronics shop, online store, department store, or something else?"
   );
-}
-
-function continueFlow(raw, text) {
-  const flow = STATE.conversationFlow;
-  if (flow === 'retailer') continueRetailerFlow(raw, text);
-  else if (flow === 'lead') continueLeadFlow(raw, text);
-  else if (flow === 'fallback') continueFallbackFlow(raw, text);
-  else { STATE.conversationFlow = null; handleUserInput(raw); }
 }
 
 function continueRetailerFlow(raw, text) {
@@ -722,30 +491,30 @@ function continueRetailerFlow(raw, text) {
   if (step === 0) {
     STATE.leadData.businessType = raw;
     STATE.flowStep = 1;
-    botReply("Great! And where are you <strong>located</strong>?", ['Ireland', 'UK', 'EU / Europe', 'Other']);
+    botReply("Perfect. And where are you <strong>based</strong>? Ireland, UK, or elsewhere in Europe?");
   } else if (step === 1) {
     STATE.leadData.location = raw;
     STATE.context.location = raw;
     STATE.flowStep = 2;
-    botReply("What <strong>brands do you currently stock</strong>? (Just give me a general idea.)");
+    botReply("Good to know. What <strong>brands do you currently stock</strong>? Just a general idea is fine — it helps our team understand your business better.");
   } else if (step === 2) {
     STATE.leadData.currentBrands = raw;
     STATE.flowStep = 3;
     botReply(
-      "Excellent. JDM works with over <strong>3,000 active accounts</strong> and distributes 15+ leading technology brands including Garmin, Fitbit, Tonies, and more. I'm sure we can find a great fit.<br><br>Could I get your <strong>business name</strong>?"
+      "Excellent. JDM works with over <strong>3,000 active retail accounts</strong> and distributes 15+ leading technology brands including Garmin, Fitbit, Tonies, and more — so I'm confident we can find some great opportunities together.<br><br>Could I get your <strong>business name</strong>?"
     );
   } else if (step === 3) {
     STATE.leadData.businessName = raw;
     STATE.flowStep = 4;
-    botReply("And your <strong>name</strong> and <strong>role/title</strong>?");
+    botReply("And your <strong>name</strong> and <strong>role or title</strong>?");
   } else if (step === 4) {
     STATE.leadData.contactName = raw;
     STATE.flowStep = 5;
-    botReply("What's the best <strong>email address</strong> to reach you?");
+    botReply("What's the best <strong>email address</strong> to reach you at?");
   } else if (step === 5) {
     STATE.leadData.email = raw;
     STATE.flowStep = 6;
-    botReply("And a <strong>phone number</strong>?");
+    botReply("And a <strong>phone number</strong> in case our team needs to reach you directly?");
   } else if (step === 6) {
     STATE.leadData.phone = raw;
     STATE.conversationFlow = null;
@@ -753,8 +522,7 @@ function continueRetailerFlow(raw, text) {
     const loc = STATE.leadData.location;
     const office = (loc && loc.toLowerCase().includes('uk')) ? 'UK' : 'Ireland';
     botReply(
-      `Thanks <strong>${escHtml(name)}</strong>! I've got everything I need. Our <strong>${office} sales team</strong> will contact you at <strong>${escHtml(STATE.leadData.email)}</strong> within <strong>1 business day</strong> to discuss partnership opportunities.<br><br>Is there anything else I can help with?`,
-      ['Brand Info', 'Services', 'That\'s all, thanks!']
+      `Thanks so much, <strong>${escHtml(name)}</strong>. I've passed your details along to our <strong>${office} sales team</strong>. They'll be in touch at <strong>${escHtml(STATE.leadData.email)}</strong> within <strong>1 business day</strong> to discuss partnership opportunities and next steps.<br><br>In the meantime, is there anything else I can help you with?`
     );
     console.log('[LEAD CAPTURED]', JSON.stringify(STATE.leadData, null, 2));
   }
@@ -765,7 +533,7 @@ function startLeadFlow(context) {
   STATE.conversationFlow = 'lead';
   STATE.flowStep = 0;
   STATE.leadData = { inquiry: context || '' };
-  botReply("I'd love to connect you with the right person. Could I get your <strong>business name</strong> and <strong>location</strong>?");
+  botReply("I'd love to get you connected with the right person. Could you share your <strong>business name</strong> and <strong>location</strong>?");
 }
 
 function continueLeadFlow(raw, text) {
@@ -773,19 +541,16 @@ function continueLeadFlow(raw, text) {
   if (step === 0) {
     STATE.leadData.businessInfo = raw;
     STATE.flowStep = 1;
-    botReply("And your <strong>name</strong>, <strong>email</strong>, and <strong>phone number</strong>?");
+    botReply("Great, and your <strong>name</strong>, <strong>email</strong>, and <strong>phone number</strong> so our team can follow up?");
   } else if (step === 1) {
     STATE.leadData.contactInfo = raw;
     STATE.flowStep = 2;
-    botReply("What are your <strong>immediate needs</strong>? Are you looking to start stocking right away, or exploring for the future?",
-      ['Ready to start now', 'Planning for the future', 'Just exploring options']
-    );
+    botReply("One last thing — are you looking to <strong>get started right away</strong>, or is this more of an exploratory conversation for the future?");
   } else if (step === 2) {
     STATE.leadData.timeline = raw;
     STATE.conversationFlow = null;
     botReply(
-      `Thanks for sharing those details! I'll have one of our <strong>sales managers</strong> reach out to you shortly to discuss how JDM can support your business.<br><br>Is there anything else you'd like to know?`,
-      ['Our Brands', 'Services', 'No, that\'s all']
+      "Thanks for sharing all of that. I'll have one of our <strong>sales managers</strong> reach out to you shortly to discuss how JDM can support your business.<br><br>Anything else I can help with in the meantime?"
     );
     console.log('[LEAD CAPTURED]', JSON.stringify(STATE.leadData, null, 2));
   }
@@ -796,7 +561,7 @@ function startFallbackFlow(context) {
   STATE.conversationFlow = 'fallback';
   STATE.flowStep = 0;
   STATE.leadData = { question: context || '' };
-  botReply("Could I get your <strong>name</strong> and <strong>business name</strong>?");
+  botReply("Of course. Could I get your <strong>name</strong> and <strong>business name</strong>?");
 }
 
 function continueFallbackFlow(raw, text) {
@@ -810,270 +575,97 @@ function continueFallbackFlow(raw, text) {
     STATE.conversationFlow = null;
     const tf = isBusinessHours() ? 'within a few hours' : 'within 24 hours';
     botReply(
-      `Thank you! Someone from JDM will reach out ${tf} to help with your query.<br><br>Is there anything else I can assist with in the meantime?`,
-      ['Brand Info', 'Services', 'No, thanks!']
+      `Thank you. I've flagged your query and someone from JDM will reach out ${tf}.<br><br>Is there anything else I can help with in the meantime?`
     );
     console.log('[FALLBACK LEAD]', JSON.stringify(STATE.leadData, null, 2));
   }
 }
 
-// ── Brand Inquiry ────────────────────────────────────
+// ── Intent Handlers ─────────────────────────────────
+
 function handleBrandInquiry(text) {
   botReply(
-    "JDM distributes a wide range of leading technology brands, including:<br><br>" +
-    "<strong>Garmin</strong> &middot; <strong>Fitbit</strong> &middot; <strong>Tonies</strong> &middot; <strong>Echelon</strong> &middot; <strong>Austere</strong> &middot; <strong>SureFire Gaming</strong> &middot; <strong>AENO</strong><br>...and <strong>15+ other leading brands</strong>.<br><br>" +
-    "Would you like to know more about a specific brand, or are you interested in becoming a retail partner?",
-    ['Specific Brand', 'Become a Retailer', 'Stock Availability']
+    "JDM distributes a strong portfolio of leading technology brands including <strong>Garmin</strong>, <strong>Fitbit</strong>, <strong>Tonies</strong>, <strong>Echelon</strong>, <strong>Austere</strong>, <strong>SureFire Gaming</strong>, <strong>AENO</strong>, and over 15 others.<br><br>If there's a specific brand you're interested in, just let me know and I can give you more detail. Or if you'd like to explore stocking any of these, I can get our sales team in touch."
   );
 }
 
 function handleSpecificBrand(brand) {
   const bn = brand.charAt(0).toUpperCase() + brand.slice(1);
   botReply(
-    `Yes, JDM is an authorised distributor of <strong>${escHtml(bn)}</strong>! We have a strong range available for our retail partners.<br><br>` +
-    "For current <strong>stock levels and pricing</strong>, existing customers can log in at <a href='https://b2b.jdmproducts.com' target='_blank'>b2b.jdmproducts.com</a>, or I can have your account manager reach out.<br><br>" +
-    "Are you an existing JDM customer, or would you like to become one?",
-    ['Existing Customer', 'Become a Retailer']
+    `Yes, JDM is an authorised distributor of <strong>${escHtml(bn)}</strong> and we carry a strong range for our retail partners.<br><br>If you're an existing customer, you can check current stock levels and pricing on the portal at <a href='https://b2b.jdmproducts.com' target='_blank'>b2b.jdmproducts.com</a>. Otherwise, I'd be happy to collect your details and have our team reach out to discuss ${escHtml(bn)} specifically. Just let me know.`
   );
 }
 
-// ── Existing Customer Support ───────────────────────
 function handleExistingCustomer(text) {
   if (match(text, ['portal','login','log in','can\'t access','access'])) {
     botReply(
-      "You can access the JDM B2B portal here:<br><br>" +
-      "Login: <a href='https://b2b.jdmproducts.com' target='_blank'>b2b.jdmproducts.com</a><br>" +
-      "Create account: <a href='https://b2b.jdmproducts.com/account/create' target='_blank'>b2b.jdmproducts.com/account/create</a><br><br>" +
-      "If you're having trouble accessing your account, I can have our support team assist you. Would you like me to arrange that?",
-      ['Yes, please help', 'I\'ll try again', 'Other question']
+      "You can access the JDM B2B portal at <a href='https://b2b.jdmproducts.com' target='_blank'>b2b.jdmproducts.com</a>. If you need to set up a new account, head to <a href='https://b2b.jdmproducts.com/account/create' target='_blank'>b2b.jdmproducts.com/account/create</a>.<br><br>If you're having trouble logging in, just let me know and I'll get our support team to help you out."
     );
   } else {
     const loc = STATE.context.location;
     const phone = (loc && loc.toLowerCase().includes('uk'))
       ? '<strong>UK: 0203 4815711</strong>'
-      : '<strong>Ireland: 01 2050500</strong> | <strong>UK: 0203 4815711</strong>';
+      : '<strong>Ireland: 01 2050500</strong> or <strong>UK: 0203 4815711</strong>';
     botReply(
-      "For orders, stock availability, and pricing, your <strong>dedicated account manager</strong> is best placed to help.<br><br>" +
-      `You can also reach us directly at ${phone}.<br><br>` +
-      "Can I get your <strong>account name</strong> so I can have your account manager contact you?",
-      ['Yes, let me provide details', 'I\'ll call directly', 'Other question']
+      `For orders, stock availability, and pricing, your <strong>dedicated account manager</strong> is the best person to help. You can also reach us directly at ${phone}.<br><br>If you'd like, give me your account name and I'll have your account manager get in touch.`
     );
   }
 }
 
-// ── Services ────────────────────────────────────────
 function handleServicesInquiry(text) {
   if (match(text, ['logistics','freight','delivery','shipping'])) {
     botReply(
-      "<strong>Logistics &amp; Distribution</strong><br><br>" +
-      "JDM operates a <strong>pan-European freight network</strong> with warehouse and distribution facilities in both <strong>Ireland and the UK</strong>. We handle everything from storage to last-mile delivery for our brand partners.<br><br>" +
-      "Would you like to speak with our logistics team about your specific needs?",
-      ['Yes, connect me', 'Other services', 'Become a Retailer']
+      "JDM operates a <strong>pan-European freight network</strong> with warehouse and distribution facilities in both <strong>Ireland and the UK</strong>. We handle everything from storage through to last-mile delivery for our brand and retail partners.<br><br>If you'd like to discuss your specific logistics requirements, I can connect you with our operations team — just say the word."
     );
   } else if (match(text, ['marketing','social','brand awareness','co-marketing'])) {
     botReply(
-      "<strong>Marketing Support</strong><br><br>" +
-      "We offer comprehensive marketing services including:<br>" +
-      "&#8226; Social media support &amp; management<br>" +
-      "&#8226; Co-marketing opportunities<br>" +
-      "&#8226; Brand awareness campaigns<br>" +
-      "&#8226; Digital and in-store marketing<br><br>" +
-      "Would you like to discuss marketing opportunities with our team?",
-      ['Yes, connect me', 'Other services', 'Become a Retailer']
+      "We offer a full range of marketing services — social media support, co-marketing opportunities, brand awareness campaigns, and both digital and in-store marketing. It's all about driving sell-through for our retail partners.<br><br>Would you like me to arrange a conversation with our marketing team?"
     );
   } else if (match(text, ['training','events','trade show'])) {
     botReply(
-      "<strong>Events &amp; Training</strong><br><br>" +
-      "JDM regularly organises:<br>" +
-      "&#8226; Trade shows and B2B events<br>" +
-      "&#8226; Product training sessions for retail staff<br>" +
-      "&#8226; Consumer events and brand activations<br><br>" +
-      "These are a great way to build product knowledge and drive sales. Interested in upcoming events?",
-      ['Yes, tell me more', 'Other services', 'Become a Retailer']
+      "JDM regularly runs trade shows, B2B events, product training sessions for retail staff, and consumer events. They're a brilliant way to build product knowledge and drive sales in-store.<br><br>If you're interested in upcoming events or want to arrange training for your team, I can get the right person to reach out."
     );
   } else {
     botReply(
-      "JDM offers a complete suite of <strong>distribution services</strong>:<br><br>" +
-      "<strong>&#128666; Logistics</strong> &mdash; Pan-European freight network, facilities in Ireland &amp; UK<br>" +
-      "<strong>&#128200; Sales Management</strong> &mdash; Regional sales team, 3,000+ accounts across UK &amp; Ireland<br>" +
-      "<strong>&#128227; Marketing</strong> &mdash; Social media, co-marketing, brand awareness campaigns<br>" +
-      "<strong>&#127891; Events &amp; Training</strong> &mdash; Trade shows, B2B events, product training<br><br>" +
-      "Which service would you like to learn more about?",
-      ['Logistics', 'Marketing', 'Events & Training', 'Speak to someone']
+      "JDM offers a complete suite of distribution services:<br><br><strong>Logistics</strong> — Pan-European freight network with facilities in Ireland and the UK.<br><strong>Sales Management</strong> — Regional sales team covering UK and Ireland, managing 3,000+ accounts.<br><strong>Marketing</strong> — Social media, co-marketing, and brand awareness campaigns.<br><strong>Events &amp; Training</strong> — Trade shows, B2B events, and product training for retail staff.<br><br>Which of these is most relevant to you? I'm happy to go into more detail or connect you with the right team."
     );
   }
 }
 
-// ── Regional / Expansion ────────────────────────────
 function handleRegional(text) {
   botReply(
-    "JDM's core markets are <strong>Ireland</strong> and the <strong>UK</strong>, where we have the strongest presence with warehouse facilities and regional sales teams.<br><br>" +
-    "In 2022, we expanded into <strong>5 additional EU countries</strong> and our European network continues to grow.<br><br>" +
-    "If you're looking for distribution coverage in a specific region, I can connect you with our regional sales manager. What country are you interested in?",
-    ['Ireland', 'UK', 'EU / Europe', 'Speak to sales team']
+    "Our core markets are <strong>Ireland</strong> and the <strong>UK</strong>, where we have warehouse facilities and dedicated regional sales teams. In 2022 we expanded into <strong>5 additional EU countries</strong>, and our European network continues to grow.<br><br>If you're looking for distribution coverage in a specific region, let me know the country and I can connect you with the right regional manager."
   );
 }
 
-// ── Buying Signal ───────────────────────────────────
 function handleBuyingSignal(text) {
-  botReply(
-    "That's great to hear! I'd love to make sure you're connected with the right person on our team.<br><br>" +
-    "To help me direct your inquiry, could you tell me a bit about your <strong>business</strong>?",
-    ['Electronics Retailer', 'Online Store', 'Department Store', 'Other']
-  );
-  // After they reply, start lead qualification
-  STATE.conversationFlow = 'lead';
-  STATE.flowStep = -1;
-  STATE.leadData = { inquiry: text };
-  // Override continueLeadFlow to handle the business type first
-  const origContinue = continueLeadFlow;
   STATE.conversationFlow = 'buyingSignal';
-}
-
-// Override for buying signal flow
-const _origHandleUser = handleUserInput;
-
-// Patch: handle buyingSignal flow
-const _origContinueFlow = continueFlow;
-function continueFlow(raw, text) {
-  if (STATE.conversationFlow === 'buyingSignal') {
-    STATE.leadData.businessType = raw;
-    STATE.conversationFlow = 'lead';
-    STATE.flowStep = 0;
-    botReply("Thanks! Could I get your <strong>business name</strong> and <strong>location</strong>?");
-    return;
-  }
-  if (STATE.conversationFlow === 'retailer') continueRetailerFlow(raw, text);
-  else if (STATE.conversationFlow === 'lead') continueLeadFlow(raw, text);
-  else if (STATE.conversationFlow === 'fallback') continueFallbackFlow(raw, text);
-  else { STATE.conversationFlow = null; handleUserInput(raw); }
-}
-
-// ── Contact ─────────────────────────────────────────
-function handleContact() {
-  const loc = STATE.context.location;
+  STATE.leadData = { inquiry: text };
   botReply(
-    "You can reach the JDM team directly:<br><br>" +
-    "<strong>Ireland:</strong> +353 1 2050500<br>" +
-    "<strong>UK:</strong> +44 203 4815711<br>" +
-    "<strong>Website:</strong> <a href='https://jdmproducts.com' target='_blank'>jdmproducts.com</a><br>" +
-    "<strong>B2B Portal:</strong> <a href='https://b2b.jdmproducts.com' target='_blank'>b2b.jdmproducts.com</a><br><br>" +
-    "Or I can collect your details and have the right team member contact you. What works best?",
-    ['Collect my details', 'I\'ll call directly']
+    "That's great to hear. To make sure I connect you with the right person, could you tell me a bit about your business — what type of retail operation are you running?"
   );
 }
 
-// ── Urgent ──────────────────────────────────────────
+function handleContact() {
+  botReply(
+    "You can reach the JDM team directly:<br><br><strong>Ireland:</strong> +353 1 2050500<br><strong>UK:</strong> +44 203 4815711<br><strong>Website:</strong> <a href='https://jdmproducts.com' target='_blank'>jdmproducts.com</a><br><strong>B2B Portal:</strong> <a href='https://b2b.jdmproducts.com' target='_blank'>b2b.jdmproducts.com</a><br><br>Or if you'd prefer, I can take your details and have the right team member reach out to you directly."
+  );
+}
+
 function handleUrgent(text) {
   botReply(
-    "I understand this is <strong>urgent</strong>. Let me make sure this gets priority attention.<br><br>" +
-    "For the fastest response, please call us directly:<br>" +
-    "<strong>Ireland:</strong> +353 1 2050500<br>" +
-    "<strong>UK:</strong> +44 203 4815711<br><br>" +
-    "Alternatively, give me your details and I'll flag this as <strong>priority</strong> for our team.",
-    ['Provide my details', 'I\'ll call now']
+    "I completely understand — let me make sure this gets priority attention. For the fastest response, I'd recommend calling us directly:<br><br><strong>Ireland:</strong> +353 1 2050500<br><strong>UK:</strong> +44 203 4815711<br><br>Alternatively, share your details with me here and I'll flag it as <strong>priority</strong> so our team picks it up immediately."
   );
 }
 
-// ── Fallback ────────────────────────────────────────
 function handleFallback() {
   botReply(
-    "That's a great question. Let me connect you with the right person on our team who can help with that.<br><br>" +
-    "Can I collect a few details so someone can get back to you?",
-    ['Yes, take my details', 'I\'ll call instead', 'Ask something else']
+    "That's a great question — I want to make sure you get the best possible answer. Let me connect you with the right person on our team. Could I grab your name and contact details so someone can get back to you?"
   );
+  STATE.conversationFlow = 'fallback';
+  STATE.flowStep = 0;
+  STATE.leadData = {};
 }
-
-// Handle quick replies that trigger flows
-const _origSendMessage = sendMessage;
-
-// Catch quick reply triggers
-document.addEventListener('click', function(e) {
-  // Already handled by quick-btn onclick
-}, true);
-
-// Intercept specific quick-reply values
-const origHandleUserInput = handleUserInput;
-handleUserInput = function(raw) {
-  const text = raw.toLowerCase().trim();
-
-  // Flow triggers from quick replies
-  if (STATE.conversationFlow) {
-    addMsg(raw, 'user');
-    continueFlow(raw, text);
-    return;
-  }
-
-  if (raw === 'Yes, take my details' || raw === 'Provide my details' || raw === 'Collect my details' || raw === 'Yes, please help') {
-    addMsg(raw, 'user');
-    startFallbackFlow();
-    return;
-  }
-
-  if (raw === 'Yes, connect me' || raw === 'Yes, tell me more' || raw === 'Speak to someone' || raw === 'Speak to sales team') {
-    addMsg(raw, 'user');
-    startLeadFlow(raw);
-    return;
-  }
-
-  if (raw === 'Yes, let me provide details') {
-    addMsg(raw, 'user');
-    startFallbackFlow('Account manager request');
-    return;
-  }
-
-  if (raw === 'Yes, another question' || raw === 'Ask something else') {
-    addMsg(raw, 'user');
-    botReply("Of course! What would you like to know?", ['Become a Retailer', 'Brand Enquiry', 'Existing Customer', 'Services Info']);
-    return;
-  }
-
-  if (raw === 'I\'ll call directly' || raw === 'I\'ll call now' || raw === 'I\'ll try again') {
-    addMsg(raw, 'user');
-    botReply("Sounds good! Our team is ready to help. Is there anything else I can assist with?", ['Yes, another question', 'No, that\'s all']);
-    return;
-  }
-
-  if (raw === 'Stock Availability') {
-    addMsg(raw, 'user');
-    handleExistingCustomer('stock availability');
-    return;
-  }
-
-  if (raw === 'Specific Brand') {
-    addMsg(raw, 'user');
-    botReply("Which brand are you interested in? We distribute Garmin, Fitbit, Tonies, Echelon, Austere, SureFire Gaming, AENO, and more.");
-    return;
-  }
-
-  if (raw === 'Our Brands' || raw === 'Brand Info') {
-    addMsg(raw, 'user');
-    handleBrandInquiry('brands');
-    return;
-  }
-
-  if (raw === 'Our Services' || raw === 'Other services' || raw === 'Services') {
-    addMsg(raw, 'user');
-    handleServicesInquiry('services');
-    return;
-  }
-
-  origHandleUserInput(raw);
-};
-
-// ── Utility ─────────────────────────────────────────
-function escHtml(s) {
-  const d = document.createElement('div');
-  d.textContent = s;
-  return d.innerHTML;
-}
-
-// Auto-open after 3 seconds if not opened
-setTimeout(() => {
-  if (!STATE.open) {
-    // Just show the badge, don't auto-open
-  }
-}, 3000);
 </script>
 </body>
 </html>
