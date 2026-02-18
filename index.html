@@ -891,99 +891,105 @@ function handleUserInput(raw) {
     return;
   }
 
-  // 2. Check for specific brand mention
+  // 2. Cross-sell / expand range request (existing retailer wants to stock more)
+  if (match(text, ['stock more brands','expand my range','expand our range','add more brands','what else can i stock','what else should i stock','other brands to carry','what other brands','diversify my range','diversify our range','cross sell','cross-sell','crosssell','broaden my range','broaden our range','what goes well with','complementary brands','more brands to stock','new brands to carry','want to stock more','looking to expand','expand the range','grow my range','grow our range','what else do you distribute','what else do you carry','add to my range','add to our range'])) {
+    handleCrossSellRequest();
+    return;
+  }
+
+  // 3. Check for specific brand mention
   const brand = detectBrand(text);
   if (brand) {
     handleSpecificBrand(brand);
     return;
   }
 
-  // 3. Stock / availability
+  // 4. Stock / availability
   if (match(text, ['stock','in stock','available','availability','inventory','lead time','out of stock'])) {
     trackTopic('stock');
     handleStock(text);
     return;
   }
 
-  // 4. Pricing
+  // 5. Pricing
   if (match(text, ['price','pricing','cost','how much','expensive','cheap','rates','margin','margins','wholesale price','price list'])) {
     trackTopic('pricing');
     handlePricing();
     return;
   }
 
-  // 5. Delivery / logistics
+  // 6. Delivery / logistics
   if (match(text, ['delivery','shipping','freight','logistics','deliver','transport','drop ship','dropship','drop shipping','courier','dispatch'])) {
     trackTopic('delivery');
     handleDelivery();
     return;
   }
 
-  // 6. Payment terms
+  // 7. Payment terms
   if (match(text, ['payment terms','net 30','net 60','credit','pay later','invoice','credit terms','payment'])) {
     trackTopic('terms');
     handlePaymentTerms();
     return;
   }
 
-  // 7. Returns & warranty
+  // 8. Returns & warranty
   if (match(text, ['return','returns','return policy','warranty','faulty','defective','damaged','broken','rma','after-sales','after sales'])) {
     trackTopic('returns');
     handleReturns();
     return;
   }
 
-  // 8. Marketing support
+  // 9. Marketing support
   if (match(text, ['marketing','advertising','social media','pos materials','pos display','point of sale','in-store display','promotional','co-op','co-marketing','brand awareness'])) {
     trackTopic('marketing');
     handleMarketing();
     return;
   }
 
-  // 9. Portal access
+  // 10. Portal access
   if (match(text, ['portal','login','log in','b2b','online ordering','account access','can\'t log in','cant log in','password','reset password'])) {
     handlePortal();
     return;
   }
 
-  // 10. Minimum order
+  // 11. Minimum order
   if (match(text, ['minimum order','minimum spend','mov','how much minimum','min order'])) {
     trackTopic('minimums');
     handleMinimumOrder();
     return;
   }
 
-  // 11. Brands / product general inquiry
+  // 12. Brands / product general inquiry
   if (match(text, ['brand','brands','product','products','range','catalogue','catalog','what do you sell','what do you distribute','what do you carry','portfolio'])) {
     handleBrandOverview();
     return;
   }
 
-  // 12. Services general
+  // 13. Services general
   if (match(text, ['services','what do you offer','how can you help','support','training','events','trade show'])) {
     handleServices();
     return;
   }
 
-  // 13. Company info / about / distributor role
+  // 14. Company info / about / distributor role
   if (match(text, ['about jdm','who is jdm','who are jdm','tell me about jdm','tell me about your company','company','history','founded','who are you','what is jdm','what does jdm do','jonathan moore','distributor','distribution','what do you do','how does it work','how does distribution work','what is a distributor','middleman','supply chain'])) {
     handleAbout();
     return;
   }
 
-  // 14. Regional / territory
+  // 15. Regional / territory
   if (match(text, ['region','country','countries','europe','european','expand','expansion','cover','territory','where do you','coverage','where are you'])) {
     handleRegional();
     return;
   }
 
-  // 15. Contact
+  // 16. Contact
   if (match(text, ['contact','phone','call','email','reach','speak to someone','talk to someone','human','real person','agent','call you','your number','phone number'])) {
     handleContact();
     return;
   }
 
-  // 16. Objections
+  // 17. Objections
   if (match(text, ['already have a distributor','have a distributor','existing distributor','current distributor','happy with our','already work with'])) {
     handleObjectionExistingDistributor();
     return;
@@ -1005,67 +1011,67 @@ function handleUserInput(raw) {
     return;
   }
 
-  // 17. Greetings
+  // 18. Greetings
   if (matchWord(text, ['hi','hello','hey','howdy','hiya','yo','sup']) || match(text, ['good morning','good afternoon','good evening'])) {
     botSay("Hello. How can I help you today?");
     return;
   }
 
-  // 18. Thanks
+  // 19. Thanks
   if (match(text, ['thanks','thank you','cheers','appreciate','thx','tysm']) || matchWord(text, ['ta'])) {
     botSay("You're welcome. Is there anything else I can help with?");
     return;
   }
 
-  // 19. Goodbye
+  // 20. Goodbye
   if (match(text, ['bye','goodbye','that\'s all','no thanks','all good','no that\'s it','see you','take care','nothing else','no more questions','that\'s everything','i\'m good','im good'])) {
     botSay("Thanks for chatting! If you need anything in the future, we're always here. Have a great day. 👋");
     return;
   }
 
-  // 20. Yes / agreement (contextual)
+  // 21. Yes / agreement (contextual)
   if (match(text, ['yes please','go ahead','absolutely','definitely']) || matchWord(text, ['yes','yeah','yep','sure','ok','okay','please'])) {
     handleAffirmative(text);
     return;
   }
 
-  // 21. Urgent
+  // 22. Urgent
   if (CTX.sentiment === 'urgent') {
     handleUrgent();
     return;
   }
 
-  // 22. Frustrated
+  // 23. Frustrated
   if (CTX.sentiment === 'frustrated') {
     handleFrustrated(text);
     return;
   }
 
-  // 23. Buying signals
+  // 24. Buying signals
   if (match(text, ['interested in','looking for','considering','exploring','want to know','tell me more','more info','information'])) {
     handleBuyingSignal(text);
     return;
   }
 
-  // 24. Unknown product / non-JDM brand inquiry
+  // 25. Unknown product / non-JDM brand inquiry
   if (detectNonJDMBrand(text) || match(text, ['do you sell','do you have','do you carry','do you stock','do you supply','can you get','can you supply','can i get','can i buy','can i order'])) {
     handleUnknownProductInquiry(raw);
     return;
   }
 
-  // 25. Off-topic / fun
+  // 26. Off-topic / fun
   if (match(text, ['weather','football','soccer','rugby','gaa','politics','joke','funny','what\'s the time','who are you','are you real','are you ai','are you a bot','chatgpt','gpt'])) {
     handleOffTopic();
     return;
   }
 
-  // 26. Demo question
+  // 27. Demo question
   if (match(text, ['demo','this a demo','is this real','demonstration','test','full version','production','real version','ai version'])) {
     handleDemoQuestion();
     return;
   }
 
-  // 27. Fallback
+  // 28. Fallback
   handleFallback(text);
 }
 
@@ -1280,19 +1286,10 @@ function handleSpecificBrand(brandKey) {
   const fit = brandFit(brandKey);
   if (fit) response += fit;
 
-  // Cross-sell: suggest complementary brands
-  const crossSell = getCrossSellSuggestions(brandKey);
-
   if (CTX.customerStatus === 'existing') {
     response += `<br><br>For current stock levels and pricing, check the portal at <a href="https://b2b.jdmproducts.com" target="_blank">b2b.jdmproducts.com</a> or contact your account manager.`;
-    if (crossSell) {
-      response += `<br><br>Retailers stocking ${brand.name} often also do well with <strong>${crossSell.join(', ')}</strong> — worth a look if you're not carrying those already.`;
-    }
     botSay(response);
   } else {
-    if (crossSell) {
-      response += `<br><br>${brand.name} pairs well with <strong>${crossSell.join(', ')}</strong> — many retailers stock them together.`;
-    }
     response += `<br><br>Would you like to know more about stocking ${brand.name}, or is there anything else I can help with?`;
     botSay(withLeadNudge(response));
   }
@@ -1495,6 +1492,37 @@ function handleBuyingSignal(text) {
     STATE.flowStep = 0;
     STATE.leadData = { inquiry: text };
   }
+}
+
+function handleCrossSellRequest() {
+  trackTopic('cross-sell');
+
+  // Collect cross-sell suggestions based on mentioned brands (for internal use only — passed to account manager, not shown to user)
+  let internalSuggestions = [];
+  CTX.mentionedBrands.forEach(b => {
+    const suggestions = getCrossSellSuggestions(b);
+    if (suggestions) internalSuggestions.push(...suggestions);
+  });
+  internalSuggestions = [...new Set(internalSuggestions)];
+
+  let resp = "Expanding your range is a smart move — and it's exactly the kind of thing your <strong>dedicated account manager</strong> is best placed to help with.";
+  resp += "<br><br>They can review what you currently stock and recommend complementary brands from our 30+ brand portfolio that are performing well for similar retailers.";
+
+  if (CTX.customerStatus === 'existing') {
+    resp += "<br><br>To make sure we connect you with the right person, could you share your <strong>account name</strong> or <strong>contact details</strong>?";
+  } else {
+    resp += "<br><br>Let me capture your details so our team can put together tailored recommendations for your business.";
+  }
+
+  STATE.flow = 'lead';
+  STATE.flowStep = 0;
+  STATE.leadData = {
+    inquiry: 'Cross-sell / range expansion',
+    type: 'cross_sell',
+    currentBrands: CTX.mentionedBrands.map(b => BRAND_DB[b]?.name || b),
+    suggestedBrands: internalSuggestions
+  };
+  botSay(resp);
 }
 
 function handleUnknownProductInquiry(rawText) {
