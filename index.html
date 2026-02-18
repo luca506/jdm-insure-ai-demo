@@ -562,6 +562,26 @@ function detectNonJDMBrand(text) {
   });
 }
 
+// ── Vendor/supplier detection (someone wants JDM to distribute THEIR products) ──
+const VENDOR_PHRASES = [
+  'stock my','distribute my','sell my','carry my','supply my',
+  'can you stock our','can you distribute our','can you sell our','can you carry our',
+  'can jdm stock','can jdm distribute','can jdm sell','can jdm carry',
+  'i have a brand','i have a product','i own a brand','we have a brand','we have a product',
+  'i manufacture','we manufacture','i produce','we produce','i make','we make',
+  'i\'m a supplier','i am a supplier','want to be your supplier','become your supplier',
+  'looking for a distributor','need a distributor','looking for distribution','seeking distribution',
+  'our product','our brand','my company makes','my company produces','our company makes','our company produces',
+  'want jdm to distribute','want jdm to stock','want jdm to sell',
+  'distribute for us','distribute for me','stock for us','stock for me',
+  'would you distribute','would you stock','would you carry','would you sell',
+  'interested in having you distribute','interested in having jdm distribute'
+];
+
+function detectVendorInquiry(text) {
+  return VENDOR_PHRASES.some(p => text.includes(p));
+}
+
 // ── Cross-sell map (brand → complementary brands) ───────
 const CROSS_SELL = {
   garmin:     ['amazfit','fitbit','shokz','hyperice','jackery'],
@@ -859,6 +879,14 @@ function handleUserInput(raw) {
 
   // Extract entities from every message
   extractEntities(text);
+
+  // Vendor/supplier inquiry — check BEFORE flow continuation so it breaks out of any active flow
+  if (detectVendorInquiry(text)) {
+    STATE.flow = null;
+    STATE.flowStep = 0;
+    handleVendorInquiry(raw);
+    return;
+  }
 
   // If in a multi-step flow, continue it
   if (STATE.flow) {
@@ -1523,6 +1551,45 @@ function handleCrossSellRequest() {
     suggestedBrands: internalSuggestions
   };
   botSay(resp);
+}
+
+function handleVendorInquiry(rawText) {
+  trackTopic('vendor-inquiry');
+  CTX.customerStatus = 'vendor';
+
+  // Try to detect if they mentioned a non-electronics category
+  const lower = rawText.toLowerCase();
+  const nonElectronicsHints = {
+    'shoe': 'footwear', 'shoes': 'footwear', 'footwear': 'footwear', 'sneaker': 'footwear',
+    'clothing': 'fashion/clothing', 'fashion': 'fashion/clothing', 'apparel': 'fashion/clothing', 'clothes': 'fashion/clothing', 'textile': 'textiles',
+    'food': 'food & beverage', 'drink': 'food & beverage', 'beverage': 'food & beverage',
+    'furniture': 'furniture', 'cosmetic': 'cosmetics', 'beauty': 'beauty', 'skincare': 'skincare',
+    'toy': 'toys', 'pet': 'pet products', 'garden': 'garden', 'automotive': 'automotive parts'
+  };
+  let detectedCategory = null;
+  for (const [keyword, category] of Object.entries(nonElectronicsHints)) {
+    if (lower.includes(keyword)) { detectedCategory = category; break; }
+  }
+
+  let resp = "I understand — you're asking if JDM can distribute <strong>your</strong> brand or products. That's a different type of partnership to what we usually discuss here.";
+  resp += "<br><br>JDM primarily focuses on <strong>consumer electronics distribution</strong> — fitness tech, gaming, smart home, audio, and lifestyle technology. But we're always interested in exploring new brand partnerships that fit our portfolio.";
+  resp += "<br><br>For brand partnership inquiries, please contact:<br><br>";
+  resp += '📧 <strong><a href="mailto:sales@jdmproducts.com?subject=Brand Partnership Inquiry">sales@jdmproducts.com</a></strong><br>';
+  resp += 'Subject: <em>"Brand Partnership Inquiry — [Your Brand Name]"</em><br><br>';
+  resp += "Include:<br>";
+  resp += "• Your brand and product details<br>";
+  resp += "• Product category<br>";
+  resp += "• Why you think it fits JDM's portfolio<br>";
+  resp += "• Your contact information<br><br>";
+  resp += "Our brand partnerships team will assess and respond within a few days.";
+
+  if (detectedCategory) {
+    resp += `<br><br><em>Note: JDM typically focuses on consumer electronics and lifestyle technology rather than ${detectedCategory}, but the team are the best people to discuss possibilities.</em>`;
+  }
+
+  resp += "<br><br>Is there anything else I can help with?";
+  botSay(resp);
+  console.log('[VENDOR INQUIRY]', rawText);
 }
 
 function handleUnknownProductInquiry(rawText) {
