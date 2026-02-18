@@ -254,79 +254,313 @@ const $badge = document.getElementById('unread-badge');
 
 // ── Brand Knowledge Base ────────────────────────────────
 const BRAND_DB = {
+  // ── FITNESS & WELLNESS ──
   garmin: {
-    name: 'Garmin',
-    since: 2015,
-    official: true,
+    name: 'Garmin', cat: 'Fitness & Wellness', since: 2015, official: true,
     categories: ['fitness','outdoor','marine','automotive','golf'],
-    desc: "Garmin is one of our flagship brands — we've been their official distributor for Ireland and UK since 2015. We carry their full range:\n\n• Fitness & wellness (watches, activity trackers)\n• Outdoor (hiking, camping GPS devices)\n• Marine (boat navigation)\n• Automotive (sat navs)\n• Golf (rangefinders, GPS)",
+    desc: "Garmin is one of our flagship brands — we've been their official distributor for Ireland and UK since 2015. We carry their full range:<br><br>• Fitness & wellness (watches, activity trackers)<br>• Outdoor (hiking, camping GPS devices)<br>• Marine (boat navigation)<br>• Automotive (sat navs)<br>• Golf (rangefinders, GPS)",
     fitFor: { sports: 'fitness range', electronics: 'full tech range', outdoor: 'outdoor and hiking GPS range', online: 'full catalogue' }
   },
   fitbit: {
-    name: 'Fitbit',
-    since: null,
-    official: true,
+    name: 'Fitbit', cat: 'Fitness & Wellness',
     categories: ['wellness','fitness tracking'],
     desc: "Fitbit is a strong wellness brand in our portfolio. Their smartwatches and fitness trackers appeal to health-conscious consumers.",
     fitFor: { sports: 'Fitbit is a natural fit alongside Garmin for your fitness customers', electronics: 'wellness wearables are a growing category', online: 'strong online demand for fitness wearables' }
   },
-  tonies: {
-    name: 'Tonies',
-    since: null,
-    official: true,
-    categories: ['children','audio','entertainment'],
-    desc: "Tonies is a unique children's audio entertainment system — very popular with parents of young kids. The Toniebox and character figures are consistently strong sellers.",
-    fitFor: { children: "This would be perfect for your customer base", toy: "Tonies is one of the hottest products in the toy space right now", family: "Families love Tonies — it's a great fit" }
+  amazfit: {
+    name: 'Amazfit', cat: 'Fitness & Wellness',
+    categories: ['smartwatches','fitness tracking'],
+    desc: "Amazfit offers affordable smartwatches and fitness trackers with strong battery life and feature sets — a popular choice for value-conscious consumers.",
+    fitFor: { sports: 'great value fitness option alongside Garmin and Fitbit', electronics: 'affordable wearable range with strong margins', online: 'strong online demand for budget-friendly smartwatches' }
+  },
+  withings: {
+    name: 'Withings', cat: 'Fitness & Wellness',
+    categories: ['health monitoring','smart scales','wellness'],
+    desc: "Withings specialises in health monitoring devices — smart scales, blood pressure monitors, and health watches. A premium brand for health-conscious consumers.",
+    fitFor: { sports: 'health monitoring complements fitness wearables', electronics: 'premium health tech is a growing category' }
   },
   echelon: {
-    name: 'Echelon',
-    since: null,
-    official: true,
+    name: 'Echelon', cat: 'Fitness & Wellness',
     categories: ['fitness equipment','connected fitness'],
     desc: "Echelon offers connected fitness equipment — smart bikes, rowers, and more. They're growing rapidly in the home fitness market.",
-    fitFor: { sports: "Works well alongside Garmin and Fitbit for a complete fitness offering", fitness: "A perfect complement to your fitness range" }
+    fitFor: { sports: 'works well alongside Garmin and Fitbit for a complete fitness offering', fitness: 'a strong complement to your fitness range' }
   },
+  hyperice: {
+    name: 'Hyperice', cat: 'Fitness & Wellness',
+    categories: ['recovery','wellness','massage'],
+    desc: "Hyperice provides cutting-edge recovery and wellness technology — percussion massagers, vibrating foam rollers, and more. Used by professional athletes and everyday consumers alike.",
+    fitFor: { sports: 'ideal alongside fitness wearables for a complete wellness offering', fitness: 'recovery tech is a fast-growing segment' }
+  },
+  beurer: {
+    name: 'Beurer', cat: 'Fitness & Wellness',
+    categories: ['health','wellbeing','personal care'],
+    desc: "Beurer offers a wide range of health and wellbeing products — from blood pressure monitors and thermometers to massage devices and personal care.",
+    fitFor: { home: 'personal care and health products complement your home range', electronics: 'health tech is in growing demand' }
+  },
+
+  // ── AUDIO & ENTERTAINMENT ──
+  shokz: {
+    name: 'Shokz', cat: 'Audio & Entertainment',
+    categories: ['headphones','bone conduction','audio'],
+    desc: "Shokz (formerly AfterShokz) makes bone conduction headphones — ideal for runners, cyclists, and anyone who needs to stay aware of their surroundings while listening. A unique product with a loyal following.",
+    fitFor: { sports: 'perfect for your fitness and outdoor customers', electronics: 'unique audio product with strong margins', online: 'strong online demand from runners and cyclists' }
+  },
+  buddyphones: {
+    name: 'BuddyPhones', cat: 'Audio & Entertainment',
+    categories: ['children','headphones','audio'],
+    desc: "BuddyPhones makes safe, volume-limited headphones designed specifically for children. Popular with parents looking for quality kids' audio.",
+    fitFor: { children: 'a natural fit for your family and kids range', electronics: "children's headphones are a popular gifting category" }
+  },
+  storyphones: {
+    name: 'StoryPhones', cat: 'Audio & Entertainment',
+    categories: ['children','audio','storytelling'],
+    desc: "StoryPhones is an innovative audio storytelling system for children — screen-free entertainment that parents love. A companion product to BuddyPhones.",
+    fitFor: { children: 'pairs well with BuddyPhones for a kids audio offering' }
+  },
+  onanoff: {
+    name: 'Onanoff', cat: 'Audio & Entertainment',
+    categories: ['audio','headphones'],
+    desc: "Onanoff produces quality audio products, including headphones and audio accessories across multiple categories."
+  },
+  tonies: {
+    name: 'Tonies', cat: 'Audio & Entertainment',
+    categories: ['children','audio','entertainment'],
+    desc: "Tonies is a unique children's audio entertainment system — very popular with parents of young kids. The Toniebox and character figures are consistently strong sellers.",
+    fitFor: { children: "ideal for your customer base", toy: "Tonies is one of the hottest products in the toy space", family: "families love Tonies" }
+  },
+
+  // ── SMART HOME & APPLIANCES ──
+  aeno: {
+    name: 'AENO', cat: 'Smart Home & Appliances',
+    categories: ['smart home','appliances'],
+    desc: "AENO provides smart home appliances — a growing category that appeals to tech-savvy consumers looking to upgrade their homes.",
+    fitFor: { home: 'AENO smart home products complement your lifestyle range', electronics: 'smart home is a fast-growing category' }
+  },
+  'mill heating': {
+    name: 'Mill Heating', cat: 'Smart Home & Appliances',
+    categories: ['smart heaters','heating','smart home'],
+    desc: "Mill Heating produces smart, energy-efficient heaters with app control. With rising energy costs, smart heating is an increasingly popular category."
+  },
+  philips: {
+    name: 'Philips', cat: 'Smart Home & Appliances',
+    categories: ['consumer electronics','smart home','personal care'],
+    desc: "Philips is a globally recognised brand — we distribute selected Philips consumer electronics products across Ireland and the UK."
+  },
+  igloohome: {
+    name: 'Igloohome', cat: 'Smart Home & Appliances',
+    categories: ['smart locks','security','smart home'],
+    desc: "Igloohome offers smart locks and access solutions — a growing category driven by smart home adoption and the short-term rental market.",
+    fitFor: { home: 'smart locks fit well in a home/lifestyle offering', electronics: 'smart security is in high demand' }
+  },
+
+  // ── GAMING & PC ──
+  razer: {
+    name: 'Razer', cat: 'Gaming & PC',
+    categories: ['gaming','peripherals','accessories'],
+    desc: "Razer is a leading global gaming brand — we distribute their peripherals and accessories including keyboards, mice, headsets, and more.",
+    fitFor: { gaming: 'Razer is one of the most recognised names in gaming', electronics: 'gaming peripherals are a high-margin category' }
+  },
+  corsair: {
+    name: 'Corsair', cat: 'Gaming & PC',
+    categories: ['gaming','pc hardware','peripherals'],
+    desc: "Corsair produces PC gaming hardware and peripherals — a premium brand with a loyal enthusiast following.",
+    fitFor: { gaming: 'pairs perfectly with Razer for a complete gaming offering', electronics: 'strong demand from the PC gaming community' }
+  },
+  steelseries: {
+    name: 'SteelSeries', cat: 'Gaming & PC',
+    categories: ['gaming','peripherals'],
+    desc: "SteelSeries makes gaming peripherals — headsets, keyboards, mice, and controllers trusted by professional esports players.",
+    fitFor: { gaming: 'one of the top names in esports and competitive gaming' }
+  },
+  hyperx: {
+    name: 'HyperX', cat: 'Gaming & PC',
+    categories: ['gaming','headsets','accessories'],
+    desc: "HyperX provides gaming headsets and accessories known for comfort and audio quality. A popular brand across casual and competitive gamers.",
+    fitFor: { gaming: 'complements Razer and SteelSeries for a full gaming range' }
+  },
+  'surefire gaming': {
+    name: 'SureFire Gaming', cat: 'Gaming & PC',
+    categories: ['gaming','accessories'],
+    desc: "SureFire Gaming offers a range of gaming accessories including headsets, keyboards, mice, and more."
+  },
+
+  // ── PROJECTORS & DISPLAYS ──
+  xgimi: {
+    name: 'XGIMI', cat: 'Projectors & Displays',
+    categories: ['projectors','smart projectors','displays'],
+    desc: "XGIMI makes smart projectors for home cinema, portable use, and business. An exciting category with growing consumer interest.",
+    fitFor: { electronics: 'projectors are a growing home entertainment segment', home: 'great for a home cinema and lifestyle offering' }
+  },
+
+  // ── OUTDOOR & BBQ ──
+  blackstone: {
+    name: 'Blackstone Products', cat: 'Outdoor & BBQ',
+    categories: ['BBQ','griddles','outdoor cooking'],
+    desc: "Blackstone Products specialises in BBQ griddles and outdoor cooking equipment. We have exclusive UK distribution for their range."
+  },
+  meater: {
+    name: 'Meater', cat: 'Outdoor & BBQ',
+    categories: ['smart thermometer','BBQ','cooking'],
+    desc: "Meater makes smart wireless meat thermometers — a clever crossover between tech and outdoor cooking. Popular with BBQ enthusiasts.",
+    fitFor: { home: 'great kitchen/cooking crossover product', electronics: 'smart kitchen tech is a growing niche' }
+  },
+
+  // ── TECH ACCESSORIES ──
   austere: {
-    name: 'Austere',
-    since: null,
-    official: true,
+    name: 'Austere', cat: 'Tech Accessories',
     categories: ['premium cables','accessories'],
     desc: "Austere produces premium cables and accessories — high-quality, beautifully designed products that offer great margins for retailers."
   },
-  'surefire gaming': {
-    name: 'SureFire Gaming',
-    since: null,
-    official: true,
-    categories: ['gaming','accessories'],
-    desc: "SureFire Gaming offers a range of gaming accessories including headsets, keyboards, mice, and more. Great for retailers serving the gaming community."
+  rivacase: {
+    name: 'Rivacase', cat: 'Tech Accessories',
+    categories: ['cases','bags','tech accessories'],
+    desc: "Rivacase offers tech cases and bags — laptop bags, tablet cases, camera bags, and more. A practical accessory range for tech-focused retailers."
   },
-  aeno: {
-    name: 'AENO',
-    since: null,
-    official: true,
-    categories: ['smart home','appliances'],
-    desc: "AENO provides smart home appliances — a growing category that appeals to tech-savvy consumers looking to upgrade their homes.",
-    fitFor: { home: "AENO smart home products would be a great fit for your lifestyle customers", electronics: "Smart home is a fast-growing category" }
+  sbs: {
+    name: 'SBS', cat: 'Tech Accessories',
+    categories: ['mobile accessories','cables','chargers'],
+    desc: "SBS provides mobile accessories including chargers, cables, screen protectors, and more. A high-volume accessory brand."
   },
-  blackstone: {
-    name: 'Blackstone Products',
-    since: null,
-    official: true,
-    categories: ['BBQ','griddles','outdoor cooking'],
-    desc: "Blackstone Products specialises in BBQ griddles and outdoor cooking equipment. We have exclusive UK distribution for their range."
+  tile: {
+    name: 'Tile', cat: 'Tech Accessories',
+    categories: ['bluetooth tracker','accessories'],
+    desc: "Tile makes Bluetooth trackers that help people find lost items — keys, bags, wallets. A well-known brand in the item-finding category.",
+    fitFor: { electronics: 'great impulse-purchase accessory near checkout', online: 'consistently strong online seller' }
+  },
+
+  // ── POWER & ENERGY ──
+  jackery: {
+    name: 'Jackery', cat: 'Power & Energy',
+    categories: ['portable power','solar','energy'],
+    desc: "Jackery produces portable power stations and solar panels — ideal for outdoor adventures, camping, and emergency backup power. A rapidly growing category.",
+    fitFor: { outdoor: 'perfect for your outdoor and adventure customers', electronics: 'portable power is one of the fastest growing tech categories' }
+  },
+  co2you: {
+    name: 'CO2YOU', cat: 'Power & Energy',
+    categories: ['sustainable','eco','green tech'],
+    desc: "CO2YOU offers sustainable products focused on reducing carbon footprint — part of the growing eco-tech movement."
+  },
+
+  // ── PHOTOGRAPHY ──
+  easypix: {
+    name: 'Easypix', cat: 'Photography',
+    categories: ['action cameras','photography'],
+    desc: "Easypix makes action cameras and photography products — an affordable alternative for consumers wanting to capture outdoor activities."
+  },
+
+  // ── CHILDREN'S TECH ──
+  myfirst: {
+    name: 'myFirst', cat: "Children's Tech",
+    categories: ['children','smartwatch','tech'],
+    desc: "myFirst offers children's tech products including kids' smartwatches, cameras, and headphones — safe, fun tech designed specifically for young users.",
+    fitFor: { children: 'a natural addition to your kids range alongside Tonies and BuddyPhones' }
+  },
+
+  // ── E-READERS ──
+  pocketbook: {
+    name: 'PocketBook', cat: 'E-Readers',
+    categories: ['e-readers','digital reading'],
+    desc: "PocketBook makes e-readers — an alternative to Kindle with open format support. Popular with avid readers who want format flexibility."
+  },
+
+  // ── COMPUTING ──
+  'thomson computing': {
+    name: 'Thomson Computing', cat: 'Computing',
+    categories: ['laptops','tablets','computing'],
+    desc: "Thomson Computing offers laptops and tablets at accessible price points — ideal for education, basic computing, and budget-conscious buyers."
+  },
+
+  // ── PAYMENTS ──
+  sumup: {
+    name: 'SumUp', cat: 'Payments',
+    categories: ['payment terminals','POS','business'],
+    desc: "SumUp provides payment terminals and solutions for small businesses — enabling card payments with simple, affordable hardware."
+  },
+
+  // ── SECURITY ──
+  mcafee: {
+    name: 'McAfee', cat: 'Security',
+    categories: ['cybersecurity','software','antivirus'],
+    desc: "McAfee provides cybersecurity software — antivirus and internet security solutions that retailers can offer as an add-on to device sales.",
+    fitFor: { electronics: 'a high-margin software add-on for any device sale' }
   }
 };
 
 const BRAND_ALIASES = {
+  // Garmin
   'garman':'garmin','garmen':'garmin','garmon':'garmin','gamin':'garmin',
+  // Fitbit
   'fitbt':'fitbit','fitbitt':'fitbit','fit bit':'fitbit','fitbat':'fitbit',
+  // Amazfit
+  'amazefit':'amazfit','amaze fit':'amazfit','amazefit':'amazfit',
+  // Withings
+  'withing':'withings','withins':'withings',
+  // Tonies
   'tonie':'tonies','tony':'tonies','tonnies':'tonies','tonys':'tonies','toniebox':'tonies',
+  // Echelon
   'echelan':'echelon','echellon':'echelon','eschelon':'echelon',
-  'austeer':'austere','austre':'austere','austire':'austere',
-  'surefire':'surefire gaming','sure fire':'surefire gaming','surefir':'surefire gaming',
+  // Hyperice
+  'hyper ice':'hyperice','hyperise':'hyperice',
+  // Shokz
+  'aftershokz':'shokz','after shokz':'shokz','shocks':'shokz','shox':'shokz',
+  // BuddyPhones
+  'buddy phones':'buddyphones','buddy phone':'buddyphones','buddyphone':'buddyphones',
+  // StoryPhones
+  'story phones':'storyphones','storyphone':'storyphones',
+  // AENO
   'aneo':'aeno','aino':'aeno','anio':'aeno',
-  'blackston':'blackstone','black stone':'blackstone'
+  // Mill Heating
+  'mill':'mill heating','mill heat':'mill heating',
+  // Igloohome
+  'igloo home':'igloohome','igloo':'igloohome',
+  // Razer
+  'rasor':'razer','razor':'razer',
+  // Corsair
+  'corsare':'corsair','corseir':'corsair',
+  // SteelSeries
+  'steel series':'steelseries','steelserie':'steelseries',
+  // HyperX
+  'hyper x':'hyperx',
+  // SureFire Gaming
+  'surefire':'surefire gaming','sure fire':'surefire gaming','surefir':'surefire gaming',
+  // XGIMI
+  'xgmi':'xgimi',
+  // Blackstone
+  'blackston':'blackstone','black stone':'blackstone',
+  // Meater
+  'meatter':'meater',
+  // Austere
+  'austeer':'austere','austre':'austere','austire':'austere',
+  // Tile
+  'tile tracker':'tile',
+  // Jackery
+  'jackary':'jackery','jackerey':'jackery',
+  // myFirst
+  'my first':'myfirst','myfirst tech':'myfirst',
+  // PocketBook
+  'pocket book':'pocketbook',
+  // Thomson Computing
+  'thomson':'thomson computing','thompson':'thomson computing','thompson computing':'thomson computing',
+  // SumUp
+  'sum up':'sumup',
+  // McAfee
+  'mcaffe':'mcafee','mcaffee':'mcafee','macafee':'mcafee',
+  // Rivacase
+  'riva case':'rivacase',
+  // Easypix
+  'easy pix':'easypix'
 };
+
+// ── Non-JDM brands (for unknown product detection) ──────
+const NON_JDM_BRANDS = ['apple','iphone','ipad','macbook','samsung','sony','lg','bose','jbl','panasonic','dell','hp','lenovo','asus','acer','microsoft','xbox','playstation','nintendo','gopro','dji','ring','nest','amazon','alexa','roku','sonos','marshall','beats','sennheiser','google','pixel','dyson','shark','irobot','roomba','instant pot','ninja','breville','kitchenaid','nespresso','keurig','weber','traeger','ooni','oneplus','oppo','huawei','xiaomi','bang and olufsen','bowers and wilkins','hisense','tcl','vizio'];
+
+function detectNonJDMBrand(text) {
+  const lower = text.toLowerCase();
+  return NON_JDM_BRANDS.some(b => {
+    const re = new RegExp('\\b' + b.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '\\b', 'i');
+    return re.test(lower);
+  });
+}
 
 // ── Location detection ──────────────────────────────────
 const LOCATIONS_IE = ['dublin','cork','galway','limerick','waterford','kilkenny','bray','wicklow','drogheda','dundalk','sligo','athlone','wexford','carlow','kildare','meath','louth','mayo','donegal','kerry','clare','tipperary','offaly','laois','longford','westmeath','roscommon','leitrim','cavan','monaghan','ireland','irish'];
@@ -767,19 +1001,25 @@ function handleUserInput(raw) {
     return;
   }
 
-  // 24. Off-topic / fun
+  // 24. Unknown product / non-JDM brand inquiry
+  if (detectNonJDMBrand(text) || match(text, ['do you sell','do you have','do you carry','do you stock','do you supply','can you get','can you supply','can i get','can i buy','can i order'])) {
+    handleUnknownProductInquiry(raw);
+    return;
+  }
+
+  // 25. Off-topic / fun
   if (match(text, ['weather','football','soccer','rugby','gaa','politics','joke','funny','what\'s the time','who are you','are you real','are you ai','are you a bot','chatgpt','gpt'])) {
     handleOffTopic();
     return;
   }
 
-  // 25. Demo question
+  // 26. Demo question
   if (match(text, ['demo','this a demo','is this real','demonstration','test','full version','production','real version','ai version'])) {
     handleDemoQuestion();
     return;
   }
 
-  // 26. Fallback
+  // 27. Fallback
   handleFallback(text);
 }
 
@@ -929,23 +1169,23 @@ function handleExistingCustomerWelcome() {
 function handleBrowsing() {
   CTX.customerStatus = 'browsing';
   botSay(
-    "No problem. Feel free to ask me about:<br><br>• Our brands (Garmin, Fitbit, Tonies, and more)<br>• How to become a JDM retail partner<br>• Stock and delivery<br>• Our services and support<br><br>What would you like to know?"
+    "No problem. Feel free to ask me about:<br><br>• Our 30+ brands (Garmin, Razer, Fitbit, Tonies, and more)<br>• How to become a JDM retail partner<br>• Stock and delivery<br>• Our services and support<br><br>What would you like to know?"
   );
 }
 
 function handlePartnershipInfo() {
   trackTopic('partnership');
-  let resp = "JDM works with <strong>3,000+ retail partners</strong> across Ireland, UK, and the EU — from independent shops to major chains.<br><br>A partnership with JDM means becoming a stockist who buys wholesale from us. We distribute leading brands including <strong>Garmin, Fitbit, Tonies, Echelon</strong>, and more.<br><br>As a retail partner, you get:<br>• Access to our full brand portfolio at wholesale pricing<br>• 1-3 day delivery from our Ireland and UK facilities<br>• Flexible payment terms (Net 30/60 for established accounts)<br>• Marketing support — POS materials, co-op marketing, social media content<br>• Dedicated account manager<br>• Real-time stock visibility via our B2B portal";
+  let resp = "JDM works with <strong>3,000+ retail partners</strong> across Ireland, UK, and the EU — from independent shops to major chains.<br><br>A partnership with JDM means becoming a stockist who buys wholesale from us. We distribute <strong>30+ leading brands</strong> across fitness, audio, gaming, smart home, outdoor, tech accessories, and more.<br><br>As a retail partner, you get:<br>• Access to our full brand portfolio at wholesale pricing<br>• 1-3 day delivery from our Ireland and UK facilities<br>• Flexible payment terms (Net 30/60 for established accounts)<br>• Marketing support — POS materials, co-op marketing, social media content<br>• Dedicated account manager<br>• Real-time stock visibility via our B2B portal<br>• Store-level training and merchandising support";
 
   if (CTX.businessType) {
     const bt = CTX.businessType;
     const relevantBrands = {
-      sports: 'Garmin, Fitbit, and Echelon',
-      electronics: 'our full tech range',
-      children: 'Tonies',
-      gaming: 'SureFire Gaming',
-      home: 'AENO smart home products',
-      online: 'our full catalogue with dropship options'
+      sports: 'Garmin, Fitbit, Amazfit, Withings, Echelon, Hyperice, and Shokz',
+      electronics: 'our full tech range including Razer, Corsair, XGIMI, and more',
+      children: 'Tonies, BuddyPhones, StoryPhones, and myFirst',
+      gaming: 'Razer, Corsair, SteelSeries, HyperX, and SureFire Gaming',
+      home: 'AENO, Mill Heating, Igloohome, and Philips smart home products',
+      online: 'our full 30+ brand catalogue with dropship options'
     };
     const brands = relevantBrands[bt] || 'our brand portfolio';
     resp += `<br><br>For ${bt} businesses, ${brands} tend to perform particularly well.`;
@@ -958,7 +1198,20 @@ function handlePartnershipInfo() {
 
 function handleBrandOverview() {
   trackTopic('brands');
-  let resp = "We distribute a portfolio of leading consumer electronics brands:<br><br>• <strong>Garmin</strong> — Fitness, outdoor, marine, automotive, golf<br>• <strong>Fitbit</strong> — Wellness & fitness tracking<br>• <strong>Tonies</strong> — Children's audio entertainment<br>• <strong>Echelon</strong> — Connected fitness equipment<br>• <strong>Austere</strong> — Premium cables & accessories<br>• <strong>SureFire Gaming</strong> — Gaming accessories<br>• <strong>AENO</strong> — Smart home appliances<br>• <strong>Blackstone</strong> — BBQ griddles (exclusive UK distribution)<br>• Plus more across consumer electronics<br><br>If you'd like more detail on any specific brand, just let me know.";
+  let resp = "We distribute <strong>30+ leading brands</strong> across these categories:<br><br>";
+  resp += "💪 <strong>Fitness & Wellness:</strong> Garmin, Fitbit, Amazfit, Withings, Echelon, Hyperice, Beurer<br><br>";
+  resp += "🎧 <strong>Audio & Entertainment:</strong> Shokz, BuddyPhones, StoryPhones, Onanoff, Tonies<br><br>";
+  resp += "🏠 <strong>Smart Home:</strong> AENO, Mill Heating, Philips, Igloohome<br><br>";
+  resp += "🎮 <strong>Gaming & PC:</strong> Razer, Corsair, SteelSeries, HyperX, SureFire Gaming<br><br>";
+  resp += "📽️ <strong>Projectors:</strong> XGIMI<br><br>";
+  resp += "🔥 <strong>Outdoor & BBQ:</strong> Blackstone, Meater<br><br>";
+  resp += "🔌 <strong>Tech Accessories:</strong> Austere, Rivacase, SBS, Tile<br><br>";
+  resp += "⚡ <strong>Power & Energy:</strong> Jackery, CO2YOU<br><br>";
+  resp += "📷 <strong>Photography:</strong> Easypix<br><br>";
+  resp += "👶 <strong>Children's Tech:</strong> myFirst<br><br>";
+  resp += "📖 <strong>E-Readers:</strong> PocketBook &nbsp;|&nbsp; 💻 <strong>Computing:</strong> Thomson Computing<br>";
+  resp += "💳 <strong>Payments:</strong> SumUp &nbsp;|&nbsp; 🔒 <strong>Security:</strong> McAfee<br><br>";
+  resp += "If you'd like more detail on any specific brand, just let me know.";
   botSay(withLeadNudge(resp));
 }
 
@@ -968,7 +1221,12 @@ function handleSpecificBrand(brandKey) {
 
   const brand = BRAND_DB[brandKey];
   if (!brand) {
-    botSay(`Let me check on that... We focus primarily on Garmin, Fitbit, Tonies, Echelon, and several other consumer electronics brands. I can have our team confirm if we carry that or suggest similar alternatives. What type of products were you hoping to find?`);
+    let resp = "I don't have detailed information on that specific product right now, but our team can help.";
+    resp += "<br><br>Let me pass your inquiry along — could you share your <strong>name</strong> and <strong>business name</strong>?";
+    STATE.flow = 'lead';
+    STATE.flowStep = 0;
+    STATE.leadData = { inquiry: brandKey, type: 'unknown_product' };
+    botSay(resp);
     return;
   }
 
@@ -1012,12 +1270,12 @@ function handlePricing() {
 
   if (CTX.businessType) {
     const relevantBrands = {
-      sports: 'Garmin, Fitbit, and Echelon',
-      electronics: 'our full tech range',
-      children: 'Tonies',
-      gaming: 'SureFire Gaming',
-      home: 'AENO smart home products',
-      online: 'our full catalogue with dropship options'
+      sports: 'Garmin, Fitbit, Amazfit, Hyperice, and Echelon',
+      electronics: 'our full tech range including Razer, Corsair, Philips, and more',
+      children: 'Tonies, BuddyPhones, StoryPhones, and myFirst',
+      gaming: 'Razer, Corsair, SteelSeries, and HyperX',
+      home: 'AENO, Mill Heating, Igloohome, and Philips smart home products',
+      online: 'our full 30+ brand catalogue with dropship options'
     };
     const brands = relevantBrands[CTX.businessType] || 'our brand portfolio';
     resp += `<br><br>For ${CTX.businessType} businesses, we typically see strong margins on ${brands}.`;
@@ -1074,11 +1332,11 @@ function handleMarketing() {
 
   if (CTX.businessType) {
     const support = {
-      sports: 'product demo units and fitness-focused POS materials',
-      electronics: 'tech spec sheets and digital marketing assets',
-      online: 'product imagery, descriptions, and digital content packs',
-      children: 'Tonies display units and seasonal promotional kits',
-      gaming: 'gaming-focused POS and event support'
+      sports: 'product demo units, fitness-focused POS materials, and brand training for Garmin, Fitbit, Amazfit, and Hyperice',
+      electronics: 'tech spec sheets, digital marketing assets, and category management support',
+      online: 'product imagery, descriptions, digital content packs, and co-brandable social media assets',
+      children: 'Tonies and BuddyPhones display units, seasonal promotional kits, and in-store demo support',
+      gaming: 'Razer, Corsair, and SteelSeries POS materials, gaming event support, and demo units'
     };
     const s = support[CTX.businessType];
     if (s) resp += `<br><br>For ${CTX.businessType} businesses, we typically provide ${s}.`;
@@ -1113,17 +1371,37 @@ function handleMinimumOrder() {
 }
 
 function handleServices() {
-  let resp = "JDM offers a complete suite of distribution services:<br><br>📦 <strong>Logistics</strong> — Pan-European freight network with facilities in Ireland and the UK. 1-3 day delivery.<br><br>👥 <strong>Sales Management</strong> — Regional sales teams covering UK and Ireland, managing 3,000+ accounts with dedicated account managers.<br><br>📢 <strong>Marketing</strong> — Social media, co-marketing, POS materials, brand awareness campaigns.<br><br>🎓 <strong>Events & Training</strong> — Trade shows, B2B events, product training for retail staff.<br><br>🔧 <strong>Technical Support</strong> — Warranty handling, after-sales service, returns processing.<br><br>Would you like to know more about any of these areas?";
+  let resp = "JDM provides end-to-end distribution services — not just supply chain, but full sales and service lifecycle management:<br><br>";
+  resp += "📦 <strong>Logistics & Fulfilment</strong><br>• Warehouses in Bray (Ireland), Daventry (UK) and mainland China<br>• 1-3 day delivery across Ireland and UK<br>• Serial number tracking, store-level deliveries, and direct-to-consumer shipping<br>• Returns management and automated forecasting<br><br>";
+  resp += "📊 <strong>Data Analytics & IT</strong><br>• Real-time sell-in and stock reports for brand partners<br>• EDI integration for instant order uploads and same-day dispatch<br>• B2B portal for 24/7 ordering, tracking, invoices, and returns<br><br>";
+  resp += "👥 <strong>Sales & Account Management</strong><br>• Regional field-based sales teams across UK and Ireland<br>• Dedicated account managers for each partner<br>• New business development and non-traditional market specialists<br>• 3,000+ active trading accounts<br><br>";
+  resp += "📢 <strong>Marketing & Merchandising</strong><br>• Social media (Facebook, Instagram, Twitter, YouTube, LinkedIn)<br>• POS materials, in-store displays, category management<br>• Co-op marketing and brand awareness campaigns<br><br>";
+  resp += "🎓 <strong>Training & Events</strong><br>• Store-level product training nationwide<br>• Trade shows (B2B) and consumer events (B2C)<br><br>";
+  resp += "🔧 <strong>After-Sales</strong><br>• Warranty handling, technical support, returns processing<br><br>";
+  resp += "Would you like more detail on any of these?";
   botSay(withLeadNudge(resp));
 }
 
 function handleAbout() {
-  let resp = "JDM Products was founded in <strong>1999 by Jonathan Moore</strong> and has grown into an award-winning consumer electronics distributor.<br><br>📍 <strong>HQ:</strong> Unit 9, Ballywaltrim Business Park, Bray, Co. Wicklow, Ireland<br>📍 <strong>UK Office:</strong> Unit 9 & 10, SignalPark, WestPark, Daventry, NN11 4SA<br><br>Key facts:<br>• <strong>3,000+</strong> active retail accounts<br>• Coverage across <strong>Ireland, UK, + 5 EU countries</strong><br>• <strong>15+</strong> leading technology brands<br>• Regional sales teams across UK and Ireland<br>• Award-winning distributor<br>• B2B portal: <a href=\"https://b2b.jdmproducts.com\" target=\"_blank\">b2b.jdmproducts.com</a>";
+  let resp = "JDM Products was founded in <strong>1999 by Jonathan Moore</strong> and has grown into an award-winning consumer electronics distributor.<br><br>";
+  resp += "📍 <strong>HQ:</strong> Unit 9, Ballywaltrim Business Park, Boghall Rd, Bray, Co. Wicklow, Ireland<br>";
+  resp += "📍 <strong>UK Office:</strong> Unit 9 & 10, SignalPark, WestPark, Daventry, NN11 4SA<br>";
+  resp += "📍 <strong>China:</strong> Mainland China facilities<br><br>";
+  resp += "Key facts:<br>";
+  resp += "• <strong>3,000+</strong> active retail accounts<br>";
+  resp += "• <strong>30+</strong> leading technology brands<br>";
+  resp += "• Coverage across <strong>Ireland, UK, + 5 EU countries</strong><br>";
+  resp += "• Regional sales teams across UK and Ireland<br>";
+  resp += "• State-of-the-art warehouse management with real-time tracking<br>";
+  resp += "• EDI integration and automated systems<br>";
+  resp += "• WEEE and GDPR compliant<br>";
+  resp += "• B2B portal: <a href=\"https://b2b.jdmproducts.com\" target=\"_blank\">b2b.jdmproducts.com</a><br><br>";
+  resp += "Our vision: providing best-in-class logistical services to both retail and supplier partners, continually investing in IT and keeping up with consumer trends.";
   botSay(withLeadNudge(resp));
 }
 
 function handleRegional() {
-  let resp = "Our core markets are <strong>Ireland</strong> and the <strong>UK</strong>, where we have warehouse facilities and dedicated regional sales teams. In 2022 we expanded into <strong>5 additional EU countries</strong>, and our European network continues to grow.";
+  let resp = "Our core markets are <strong>Ireland</strong> and the <strong>UK</strong>, where we have warehouse facilities and dedicated regional sales teams. We also have facilities in <strong>mainland China</strong> for sourcing. In 2022 we expanded into <strong>5 additional EU countries</strong>, and our European network continues to grow.";
 
   if (CTX.userLocation) {
     const r = CTX.userLocation.region;
@@ -1138,7 +1416,7 @@ function handleRegional() {
 
 function handleContact() {
   botSay(
-    "You can reach the JDM team directly:<br><br>📞 <strong>Ireland:</strong> 01 2050500<br>📞 <strong>UK:</strong> 0203 4815711<br>📧 <strong>Email:</strong> <a href=\"mailto:sales@jdmproducts.com\">sales@jdmproducts.com</a><br>🌐 <strong>Website:</strong> <a href=\"https://jdmproducts.com\" target=\"_blank\">jdmproducts.com</a><br>🔑 <strong>B2B Portal:</strong> <a href=\"https://b2b.jdmproducts.com\" target=\"_blank\">b2b.jdmproducts.com</a><br><br>Or I can take your details and have the right team member reach out to you."
+    "You can reach the JDM team directly:<br><br>📞 <strong>Ireland:</strong> 01 2050500<br>📞 <strong>UK:</strong> 0203 4815711<br>📧 <strong>Email:</strong> <a href=\"mailto:sales@jdmproducts.com\">sales@jdmproducts.com</a><br>🌐 <strong>Website:</strong> <a href=\"https://jdmproducts.com\" target=\"_blank\">jdmproducts.com</a><br>🔑 <strong>B2B Portal:</strong> <a href=\"https://b2b.jdmproducts.com\" target=\"_blank\">b2b.jdmproducts.com</a><br><br>📱 <strong>Social Media:</strong><br>• Instagram: <a href=\"https://instagram.com/jdmproductsltd\" target=\"_blank\">@jdmproductsltd</a><br>• Facebook: <a href=\"https://facebook.com/jdmproductsltd\" target=\"_blank\">/jdmproductsltd</a><br>• LinkedIn: <a href=\"https://linkedin.com/company/jdm-products\" target=\"_blank\">/company/jdm-products</a><br><br>Or I can take your details and have the right team member reach out to you."
   );
 }
 
@@ -1165,13 +1443,24 @@ function handleBuyingSignal(text) {
   }
 }
 
+function handleUnknownProductInquiry(rawText) {
+  let resp = "While that specific product may not be part of our current brand portfolio, JDM is always exploring new partnerships and expanding our range.";
+  resp += "<br><br>Our team can let you know whether we can help, suggest alternatives from our existing brands, or let you know about any upcoming additions to our portfolio.";
+  resp += "<br><br>Let me pass your inquiry along — could you share your <strong>name</strong> and <strong>business name</strong>?";
+
+  STATE.flow = 'lead';
+  STATE.flowStep = 0;
+  STATE.leadData = { inquiry: rawText, type: 'unknown_product' };
+  botSay(resp);
+}
+
 
 // ═══════════════════════════════════════════════════════════
 //  OBJECTION HANDLERS
 // ═══════════════════════════════════════════════════════════
 
 function handleObjectionExistingDistributor() {
-  let resp = "Understood — many of our 3,000+ retail partners actually work with multiple distributors — each brings different brands and strengths.<br><br>JDM's particular strengths are:<br>• <strong>Exclusive brands</strong> like Garmin (official distributor since 2015)<br>• <strong>Local stock</strong> = faster delivery than importing<br>• <strong>Strong marketing support</strong><br>• <strong>Multi-brand ordering</strong> (one order, multiple brands)";
+  let resp = "Understood — many of our 3,000+ retail partners actually work with multiple distributors — each brings different brands and strengths.<br><br>JDM's particular strengths are:<br>• <strong>30+ brands</strong> including Garmin (official distributor since 2015), Razer, Corsair, Fitbit, and more<br>• <strong>Local stock</strong> = faster delivery than importing<br>• <strong>Strong marketing support</strong> including in-store merchandising and training<br>• <strong>Multi-brand ordering</strong> (one order, multiple brands)";
 
   if (CTX.mentionedBrands.length) {
     const names = CTX.mentionedBrands.map(b => BRAND_DB[b]?.name || b).join(', ');
@@ -1190,7 +1479,7 @@ function handleObjectionPrice() {
 }
 
 function handleObjectionDirect() {
-  let resp = "That's an option if you're ordering in very large volumes.<br><br>Most retailers find working with a distributor like JDM more efficient because:<br><br>💰 <strong>Lower Minimums:</strong> Manufacturers often require container-loads; we break bulk<br>📦 <strong>Local Stock:</strong> Next-day delivery vs weeks from overseas<br>🎯 <strong>Multi-Brand:</strong> Order Garmin, Fitbit, Tonies in one transaction<br>💳 <strong>Better Terms:</strong> Net 30/60 vs prepayment for imports<br>📞 <strong>Local Support:</strong> We handle warranty, returns, technical queries<br>📊 <strong>Marketing:</strong> We provide POS materials and marketing support";
+  let resp = "That's an option if you're ordering in very large volumes.<br><br>Most retailers find working with a distributor like JDM more efficient because:<br><br>💰 <strong>Lower Minimums:</strong> Manufacturers often require container-loads; we break bulk<br>📦 <strong>Local Stock:</strong> Next-day delivery vs weeks from overseas<br>🎯 <strong>Multi-Brand:</strong> Order from 30+ brands in one transaction<br>💳 <strong>Better Terms:</strong> Net 30/60 vs prepayment for imports<br>📞 <strong>Local Support:</strong> We handle warranty, returns, technical queries<br>📊 <strong>Marketing:</strong> We provide POS materials and marketing support";
 
   if (CTX.businessType) {
     resp += `<br><br>For ${CTX.businessType} businesses, the flexibility usually outweighs any small price difference.`;
@@ -1249,7 +1538,7 @@ function handleAffirmative(text) {
 
 function handleOffTopic() {
   botSay(
-    "I'm specifically here to help with JDM Products and our electronics distribution services.<br><br>I can help you with:<br>• Our brands (Garmin, Fitbit, Tonies, etc.)<br>• Becoming a retail partner<br>• Stock and ordering<br>• Account support<br><br>What brings you to JDM today?"
+    "I'm specifically here to help with JDM Products and our electronics distribution services.<br><br>I can help you with:<br>• Our 30+ brands (Garmin, Razer, Fitbit, Tonies, and more)<br>• Becoming a retail partner<br>• Stock and ordering<br>• Account support<br><br>What brings you to JDM today?"
   );
 }
 
