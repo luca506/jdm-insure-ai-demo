@@ -562,6 +562,52 @@ function detectNonJDMBrand(text) {
   });
 }
 
+// ── Cross-sell map (brand → complementary brands) ───────
+const CROSS_SELL = {
+  garmin:     ['amazfit','fitbit','shokz','hyperice','jackery'],
+  fitbit:     ['garmin','amazfit','withings','beurer'],
+  amazfit:    ['garmin','fitbit','shokz','hyperice'],
+  withings:   ['fitbit','beurer','garmin'],
+  echelon:    ['garmin','fitbit','hyperice','shokz'],
+  hyperice:   ['garmin','fitbit','echelon','beurer'],
+  beurer:     ['withings','fitbit','hyperice'],
+  shokz:      ['garmin','fitbit','amazfit','buddyphones'],
+  buddyphones:['tonies','storyphones','myfirst','onanoff'],
+  storyphones:['tonies','buddyphones','myfirst'],
+  tonies:     ['buddyphones','storyphones','myfirst'],
+  onanoff:    ['buddyphones','shokz'],
+  razer:      ['corsair','steelseries','hyperx','surefire gaming'],
+  corsair:    ['razer','steelseries','hyperx'],
+  steelseries:['razer','corsair','hyperx'],
+  hyperx:     ['razer','corsair','steelseries'],
+  'surefire gaming':['razer','corsair','hyperx'],
+  aeno:       ['mill heating','igloohome','philips'],
+  'mill heating':['aeno','igloohome','philips'],
+  philips:    ['aeno','mill heating','igloohome','beurer'],
+  igloohome:  ['aeno','mill heating','philips'],
+  xgimi:      ['austere','razer'],
+  blackstone: ['meater','jackery'],
+  meater:     ['blackstone','jackery'],
+  austere:    ['rivacase','sbs','tile','xgimi'],
+  rivacase:   ['austere','sbs','tile'],
+  sbs:        ['austere','rivacase','tile'],
+  tile:       ['sbs','austere','rivacase'],
+  jackery:    ['garmin','blackstone','meater'],
+  myfirst:    ['tonies','buddyphones','storyphones'],
+  mcafee:     ['tile','sbs','austere']
+};
+
+function getCrossSellSuggestions(brandKey) {
+  const suggestions = CROSS_SELL[brandKey];
+  if (!suggestions) return null;
+  // Filter out brands the retailer has already mentioned
+  const unmentioned = suggestions.filter(b => !CTX.mentionedBrands.includes(b));
+  if (unmentioned.length === 0) return null;
+  // Return top 2-3 suggestions
+  const picks = unmentioned.slice(0, 3);
+  return picks.map(b => BRAND_DB[b]?.name || b);
+}
+
 // ── Location detection ──────────────────────────────────
 const LOCATIONS_IE = ['dublin','cork','galway','limerick','waterford','kilkenny','bray','wicklow','drogheda','dundalk','sligo','athlone','wexford','carlow','kildare','meath','louth','mayo','donegal','kerry','clare','tipperary','offaly','laois','longford','westmeath','roscommon','leitrim','cavan','monaghan','ireland','irish'];
 const LOCATIONS_UK = ['london','manchester','birmingham','leeds','glasgow','edinburgh','liverpool','bristol','sheffield','newcastle','nottingham','leicester','cardiff','belfast','derry','southampton','reading','brighton','cambridge','oxford','york','bath','exeter','norwich','coventry','stoke','wolverhampton','sunderland','derby','swansea','aberdeen','dundee','inverness','england','scotland','wales','northern ireland','uk','united kingdom','britain','british'];
@@ -779,7 +825,7 @@ function toggleChat() {
 
 function greet() {
   botSay(
-    "Hi there, I'm <strong>Michael</strong> from <strong>JDM Products</strong>. I help retailers with product inquiries, stock availability, and partnership opportunities.<br><br>Whether you're an existing customer, interested in becoming a retail partner, or just exploring — I'm here to help. What can I do for you?",
+    "Hi there, I'm <strong>Michael</strong> from <strong>JDM Products</strong> — we're a consumer electronics distributor serving <strong>3,000+ retail partners</strong> across Ireland, UK, and the EU.<br><br>We work with brands like Garmin, Razer, and Fitbit to get their products into retail stores with local stock, fast delivery, and full support.<br><br>Whether you're an existing retail customer, interested in stocking our brands, or just exploring — how can I help?",
     800
   );
 }
@@ -919,8 +965,8 @@ function handleUserInput(raw) {
     return;
   }
 
-  // 13. Company info / about
-  if (match(text, ['about jdm','who is jdm','who are jdm','tell me about jdm','tell me about your company','company','history','founded','who are you','what is jdm','what does jdm do','jonathan moore'])) {
+  // 13. Company info / about / distributor role
+  if (match(text, ['about jdm','who is jdm','who are jdm','tell me about jdm','tell me about your company','company','history','founded','who are you','what is jdm','what does jdm do','jonathan moore','distributor','distribution','what do you do','how does it work','how does distribution work','what is a distributor','middleman','supply chain'])) {
     handleAbout();
     return;
   }
@@ -1175,7 +1221,7 @@ function handleBrowsing() {
 
 function handlePartnershipInfo() {
   trackTopic('partnership');
-  let resp = "JDM works with <strong>3,000+ retail partners</strong> across Ireland, UK, and the EU — from independent shops to major chains.<br><br>A partnership with JDM means becoming a stockist who buys wholesale from us. We distribute <strong>30+ leading brands</strong> across fitness, audio, gaming, smart home, outdoor, tech accessories, and more.<br><br>As a retail partner, you get:<br>• Access to our full brand portfolio at wholesale pricing<br>• 1-3 day delivery from our Ireland and UK facilities<br>• Flexible payment terms (Net 30/60 for established accounts)<br>• Marketing support — POS materials, co-op marketing, social media content<br>• Dedicated account manager<br>• Real-time stock visibility via our B2B portal<br>• Store-level training and merchandising support";
+  let resp = "JDM is a <strong>consumer electronics distributor</strong> — we're the link between global technology brands and retail stores across Ireland, UK, and the EU.<br><br>We work with <strong>30+ brand partners</strong> like Garmin, Razer, Fitbit, and Philips. We buy their products, warehouse them locally, and supply them to our <strong>3,000+ retail partners</strong> — from independent shops to major chains.<br><br>As a JDM retail partner, you get:<br>• <strong>Wholesale pricing</strong> on 30+ leading brands, all from one supplier<br>• <strong>Local stock</strong> = 1-3 day delivery from our Ireland and UK warehouses (no importing headaches)<br>• <strong>Flexible payment terms</strong> (Net 30/60 for established accounts)<br>• <strong>Dedicated account manager</strong> who knows your business<br>• <strong>Marketing support</strong> — POS materials, in-store displays, co-op marketing<br>• <strong>Product training</strong> — our field teams can train your store staff on our brands<br>• <strong>After-sales support</strong> — we handle warranty claims and returns, so you don't deal with manufacturers directly<br>• <strong>B2B portal</strong> for 24/7 ordering, real-time stock visibility, and order tracking";
 
   if (CTX.businessType) {
     const bt = CTX.businessType;
@@ -1234,10 +1280,19 @@ function handleSpecificBrand(brandKey) {
   const fit = brandFit(brandKey);
   if (fit) response += fit;
 
+  // Cross-sell: suggest complementary brands
+  const crossSell = getCrossSellSuggestions(brandKey);
+
   if (CTX.customerStatus === 'existing') {
     response += `<br><br>For current stock levels and pricing, check the portal at <a href="https://b2b.jdmproducts.com" target="_blank">b2b.jdmproducts.com</a> or contact your account manager.`;
+    if (crossSell) {
+      response += `<br><br>Retailers stocking ${brand.name} often also do well with <strong>${crossSell.join(', ')}</strong> — worth a look if you're not carrying those already.`;
+    }
     botSay(response);
   } else {
+    if (crossSell) {
+      response += `<br><br>${brand.name} pairs well with <strong>${crossSell.join(', ')}</strong> — many retailers stock them together.`;
+    }
     response += `<br><br>Would you like to know more about stocking ${brand.name}, or is there anything else I can help with?`;
     botSay(withLeadNudge(response));
   }
@@ -1371,32 +1426,31 @@ function handleMinimumOrder() {
 }
 
 function handleServices() {
-  let resp = "JDM provides end-to-end distribution services — not just supply chain, but full sales and service lifecycle management:<br><br>";
-  resp += "📦 <strong>Logistics & Fulfilment</strong><br>• Warehouses in Bray (Ireland), Daventry (UK) and mainland China<br>• 1-3 day delivery across Ireland and UK<br>• Serial number tracking, store-level deliveries, and direct-to-consumer shipping<br>• Returns management and automated forecasting<br><br>";
-  resp += "📊 <strong>Data Analytics & IT</strong><br>• Real-time sell-in and stock reports for brand partners<br>• EDI integration for instant order uploads and same-day dispatch<br>• B2B portal for 24/7 ordering, tracking, invoices, and returns<br><br>";
-  resp += "👥 <strong>Sales & Account Management</strong><br>• Regional field-based sales teams across UK and Ireland<br>• Dedicated account managers for each partner<br>• New business development and non-traditional market specialists<br>• 3,000+ active trading accounts<br><br>";
-  resp += "📢 <strong>Marketing & Merchandising</strong><br>• Social media (Facebook, Instagram, Twitter, YouTube, LinkedIn)<br>• POS materials, in-store displays, category management<br>• Co-op marketing and brand awareness campaigns<br><br>";
-  resp += "🎓 <strong>Training & Events</strong><br>• Store-level product training nationwide<br>• Trade shows (B2B) and consumer events (B2C)<br><br>";
-  resp += "🔧 <strong>After-Sales</strong><br>• Warranty handling, technical support, returns processing<br><br>";
+  let resp = "As a distributor, JDM handles the full journey from brand to retail shelf — so brands can focus on making products and retailers can focus on selling them:<br><br>";
+  resp += "📦 <strong>Logistics & Stock</strong><br>• Local warehouses in Ireland (Bray) and UK (Daventry) — stock on your doorstep, not overseas<br>• 1-3 day delivery, serial number tracking, store-level deliveries<br>• Drop shipping and direct-to-consumer options<br><br>";
+  resp += "👥 <strong>Sales & Account Management</strong><br>• Regional field sales teams across UK and Ireland<br>• Dedicated account manager for your business<br>• Our team can visit your store, help with ranging, and advise on what sells<br><br>";
+  resp += "📢 <strong>Marketing & Merchandising</strong><br>• POS materials, in-store displays, and shelf layouts<br>• Social media content, co-op marketing, and brand campaigns<br>• We bring the marketing budgets that brands invest — into your store<br><br>";
+  resp += "🎓 <strong>Training</strong><br>• Our field team trains your store staff on product features and selling points<br>• Trade shows and consumer demo events<br><br>";
+  resp += "🔧 <strong>After-Sales</strong><br>• We handle warranty claims and returns on your behalf — you don't deal with manufacturers directly<br><br>";
+  resp += "📊 <strong>B2B Portal & Tech</strong><br>• 24/7 ordering, real-time stock visibility, order tracking, invoices<br>• EDI integration for automated ordering and same-day dispatch<br><br>";
   resp += "Would you like more detail on any of these?";
   botSay(withLeadNudge(resp));
 }
 
 function handleAbout() {
   let resp = "JDM Products was founded in <strong>1999 by Jonathan Moore</strong> and has grown into an award-winning consumer electronics distributor.<br><br>";
-  resp += "📍 <strong>HQ:</strong> Unit 9, Ballywaltrim Business Park, Boghall Rd, Bray, Co. Wicklow, Ireland<br>";
-  resp += "📍 <strong>UK Office:</strong> Unit 9 & 10, SignalPark, WestPark, Daventry, NN11 4SA<br>";
-  resp += "📍 <strong>China:</strong> Mainland China facilities<br><br>";
+  resp += "<strong>What we do:</strong> We sit between global technology brands (like Garmin, Razer, Philips) and retail stores (like Harvey Norman, Currys, and independent retailers). Brands appoint us to manage their products regionally — we buy stock from them, warehouse it locally, and supply it to retailers with full support.<br><br>";
+  resp += "So the flow is: <strong>Brand → JDM (distributor) → Retailer → Consumer</strong><br><br>";
+  resp += "📍 <strong>HQ:</strong> Ballywaltrim Business Park, Bray, Co. Wicklow, Ireland<br>";
+  resp += "📍 <strong>UK:</strong> SignalPark, Daventry, NN11 4SA<br>";
+  resp += "📍 <strong>China:</strong> Mainland China sourcing facilities<br><br>";
   resp += "Key facts:<br>";
   resp += "• <strong>3,000+</strong> active retail accounts<br>";
-  resp += "• <strong>30+</strong> leading technology brands<br>";
+  resp += "• <strong>30+</strong> brand partners<br>";
   resp += "• Coverage across <strong>Ireland, UK, + 5 EU countries</strong><br>";
-  resp += "• Regional sales teams across UK and Ireland<br>";
-  resp += "• State-of-the-art warehouse management with real-time tracking<br>";
-  resp += "• EDI integration and automated systems<br>";
-  resp += "• WEEE and GDPR compliant<br>";
-  resp += "• B2B portal: <a href=\"https://b2b.jdmproducts.com\" target=\"_blank\">b2b.jdmproducts.com</a><br><br>";
-  resp += "Our vision: providing best-in-class logistical services to both retail and supplier partners, continually investing in IT and keeping up with consumer trends.";
+  resp += "• Regional field sales teams, dedicated account managers<br>";
+  resp += "• We handle logistics, stock management, in-store training, merchandising, marketing, and after-sales — so brands don't have to manage it all directly<br>";
+  resp += "• B2B portal: <a href=\"https://b2b.jdmproducts.com\" target=\"_blank\">b2b.jdmproducts.com</a>";
   botSay(withLeadNudge(resp));
 }
 
@@ -1479,7 +1533,7 @@ function handleObjectionPrice() {
 }
 
 function handleObjectionDirect() {
-  let resp = "That's an option if you're ordering in very large volumes.<br><br>Most retailers find working with a distributor like JDM more efficient because:<br><br>💰 <strong>Lower Minimums:</strong> Manufacturers often require container-loads; we break bulk<br>📦 <strong>Local Stock:</strong> Next-day delivery vs weeks from overseas<br>🎯 <strong>Multi-Brand:</strong> Order from 30+ brands in one transaction<br>💳 <strong>Better Terms:</strong> Net 30/60 vs prepayment for imports<br>📞 <strong>Local Support:</strong> We handle warranty, returns, technical queries<br>📊 <strong>Marketing:</strong> We provide POS materials and marketing support";
+  let resp = "Some very large retailers do buy direct, but most find it's more practical to work with a distributor like JDM. Here's why:<br><br>The brands we represent — Garmin, Razer, Fitbit, etc. — are global companies. They don't want to individually manage stock, training, and support for every retail store in Ireland and UK. That's the gap we fill.<br><br>💰 <strong>Lower Minimums:</strong> Brands often require container-loads for direct orders; we break bulk so you can order what you need<br>📦 <strong>Local Stock:</strong> Product is already in our warehouses in Ireland and UK — 1-3 day delivery, not weeks from overseas<br>🎯 <strong>One Order, 30+ Brands:</strong> Instead of managing separate accounts with Garmin, Fitbit, Razer, Tonies, etc., one order to JDM covers all of them<br>💳 <strong>Better Terms:</strong> Net 30/60 payment terms vs prepayment for direct imports<br>📞 <strong>Full Support:</strong> We train your staff, set up in-store displays, handle warranty returns, and provide marketing assets<br>📊 <strong>Data & Insights:</strong> We can advise on what's selling well in similar stores";
 
   if (CTX.businessType) {
     resp += `<br><br>For ${CTX.businessType} businesses, the flexibility usually outweighs any small price difference.`;
